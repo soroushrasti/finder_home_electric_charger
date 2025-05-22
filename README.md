@@ -59,16 +59,7 @@ python -m venv venv
      STRIPE_API_KEY=your_stripe_api_key
      ```
 
-### Project Structure
 
-finder_home_electric_charger/
-├── app.py                # Main application file
-├── templates/            # HTML templates for the frontend
-├── static/               # Static files (CSS, JavaScript, images)
-├── models.py             # Database models
-├── routes.py             # Application routes
-├── requirements.txt      # Python dependencies
-└── README.md             # Project documentation
 
 
 ### Contributing
