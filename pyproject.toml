@@ -17,6 +17,7 @@ marshmallow = "^3.20.2"
 psycopg2-binary = "^2.9.9"
 httpx = "^0.26.0"
 pyjwt = {extras = ["crypto"], version = "^2.10.1"}
+alembic = "^1.16.1"
 
 
 [build-system]

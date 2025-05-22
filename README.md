@@ -59,7 +59,72 @@ python -m venv venv
      STRIPE_API_KEY=your_stripe_api_key
      ```
 
+### README: How to Modify or Add a Table and Generate & Apply Migrations
 
+This guide explains how to modify an existing table or add a new table in your project and apply the changes using Alembic.
+
+---
+
+### **1. Modify or Add a Table**
+1. **Locate the Models**:
+   - Open the file where your SQLAlchemy models are defined (e.g., `src/core/services/models.py`).
+
+2. **Modify an Existing Table**:
+   - Update the model class to reflect the changes. For example, to add a new column:
+     ```python
+     from sqlalchemy import Column, String
+
+     class User(Base):
+         __tablename__ = 'users'
+         # Existing columns...
+         new_column = Column(String(100), nullable=True)  # Add a new column
+     ```
+
+3. **Add a New Table**:
+   - Define a new model class for the table:
+     ```python
+     from sqlalchemy import Column, Integer, String
+
+     class NewTable(Base):
+         __tablename__ = 'new_table'
+         id = Column(Integer, primary_key=True, autoincrement=True)
+         name = Column(String(100), nullable=False)
+     ```
+
+---
+
+### **2. Generate a Migration**
+Run the following command to generate a migration script:
+```bash
+alembic revision --autogenerate -m "Describe your changes"
+```
+- Alembic will detect changes in your models and create a migration script in the `alembic/versions` directory.
+
+---
+
+### **3. Review the Migration Script**
+- Open the generated migration file (e.g., `alembic/versions/<revision_id>_describe_your_changes.py`).
+- Verify that the `upgrade()` and `downgrade()` functions correctly reflect your changes.
+
+---
+
+### **4. Apply the Migration**
+Run the following command to apply the migration to your database:
+```bash
+alembic upgrade head
+```
+This will execute the `upgrade()` function in the migration script and apply the changes to the database.
+
+---
+
+### **5. Verify the Changes**
+- Use a database client or query tool to confirm that the changes have been applied to the database.
+
+---
+
+### Notes:
+- Always back up your database before applying migrations in production.
+- If you encounter issues, check the Alembic logs or the generated migration script for errors.
 
 
 ### Contributing
