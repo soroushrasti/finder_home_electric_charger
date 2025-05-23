@@ -3,8 +3,6 @@ from sqlalchemy.orm import Session
 from typing import Optional, Union
 from sqlalchemy.sql import exists
 from sqlalchemy import func
-from src.core.services.models import User, UserProfile, UserHistory, UserProfileHistory,  Segment
-from src.apis.v1.schemas.user import users_schema, user_profile_schema, UserUpdateSchema, UserCreationSchema, users_list_schema
 
 class UserRepositoryAbstract(ABC):
     @abstractmethod
@@ -33,4 +31,9 @@ class UserRepositoryAbstract(ABC):
             username: str
     ) -> bool:
         pass
+
+class UserRepository(UserRepositoryAbstract):
+    def __init__(self, db_session: Session) -> None:
+        super().__init__()
+        self.db_session = db_session
 
