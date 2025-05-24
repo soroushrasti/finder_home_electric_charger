@@ -1,9 +1,10 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, Body, Path, Query
+from fastapi import APIRouter, Depends, Body, Path, Query, HTTPException
 from starlette import status
 
 from src.apis.v1.functionalities.user.service import UserService
 from src.apis.v1.functionalities.user.factory import get_user_service
+from src.apis.v1.schemas.user import CreateUserRequest
 
 router = APIRouter()
 

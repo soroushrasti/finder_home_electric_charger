@@ -1,7 +1,8 @@
-from src.apis.v1.functionalities.user_mgmt.repository import UserRepository
+from src.core.services.internal.db_repository.user import UserRepository, UserRepositoryAbstract
+
 
 class UserService:
-    def __init__(self, user_repo: UserRepository):
+    def __init__(self, user_repo: UserRepositoryAbstract):
         self.user_repo = user_repo
 
     def get_user(self, user_id: int):

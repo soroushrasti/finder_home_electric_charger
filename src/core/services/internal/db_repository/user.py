@@ -1,7 +1,11 @@
 from src.core.services.models import User
 from sqlalchemy.orm import Session
 
-class UserRepository:
+
+class UserRepositoryAbstract:
+    pass
+
+class UserRepository(UserRepositoryAbstract):
     def __init__(self, db: Session):
         self.db = db
 
