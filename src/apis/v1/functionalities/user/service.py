@@ -1,4 +1,4 @@
-from src.core.services.internal.db_repository.user import UserRepository, UserRepositoryAbstract
+from src.core.db_repository.user import UserRepositoryAbstract
 
 
 class UserService:

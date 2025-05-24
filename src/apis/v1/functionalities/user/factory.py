@@ -1,15 +1,13 @@
 from fastapi import Depends
-from sqlalchemy.orm import Session, create_session
+from sqlalchemy.orm import Session
 
 from src.apis.v1.functionalities.user.service import UserService
-from src.core.services.internal.db_repository.user import UserRepository, UserRepositoryAbstract
+from src.config.database import create_session
+from src.core.db_repository.user import UserRepositoryAbstract, UserRepository
 
 
 class UserServiceAbstract:
     pass
-
-
-
 
 
 class UserServiceFactory:

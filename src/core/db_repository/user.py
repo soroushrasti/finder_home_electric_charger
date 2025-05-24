@@ -1,12 +1,17 @@
 from typing import Any
 
-from src.core.services.models import User
+from src.core.models import User
 from sqlalchemy.orm import Session
 
 
 class UserRepositoryAbstract:
     def get_user_by_id(self, user_id):
         pass
+
+    def create_user(self, user_data):
+        pass
+
+
 
 class UserRepository(UserRepositoryAbstract):
     def __init__(self, db: Session):

@@ -5,6 +5,7 @@ class BaseConfig( BaseSettings):
     HOST: str = Field(default="0.0.0.0")
     PORT: int = Field(default=8080)
     DEBUG: str = Field(default="True")
+    TOKEN: str = Field(default="token")
 
     class Config:
         env_file = ".env.base"
