@@ -1,39 +1,17 @@
-from abc import ABC, abstractmethod
+from src.core.services.models import User
 from sqlalchemy.orm import Session
-from typing import Optional, Union
-from sqlalchemy.sql import exists
-from sqlalchemy import func
 
-class UserRepositoryAbstract(ABC):
-    @abstractmethod
-    async def get_user_by_email(
-            self,
-            user_email: str
-    ):
-        pass
+class UserRepository:
+    def __init__(self, db: Session):
+        self.db = db
 
-    @abstractmethod
-    async def get_user_by_id(
-            self,
-            user_id: int
-    ):
-        pass
+    def get_user_by_id(self, user_id: int) -> User:
+        return self.db.query(User).filter(User.id == user_id).first()
 
-    @abstractmethod
-    async def get_all_users(
-            self
-    ):
-        pass
-    
-    @abstractmethod
-    async def check_username(
-            self,
-            username: str
-    ) -> bool:
-        pass
-
-class UserRepository(UserRepositoryAbstract):
-    def __init__(self, db_session: Session) -> None:
-        super().__init__()
-        self.db_session = db_session
-
+    # Add to src/core/services/internal/db_repository/user.py
+    def create_user(self, user_data: dict) -> User:
+        new_user = User(**user_data)
+        self.db.add(new_user)
+        self.db.commit()
+        self.db.refresh(new_user)
+        return new_user

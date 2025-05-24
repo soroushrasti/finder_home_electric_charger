@@ -1,24 +1,19 @@
-from marshmallow import Schema, fields, validate, ValidationError, post_load
+from pydantic import BaseModel, EmailStr
+from enum import Enum
+from typing import Optional
 
+class UserType(str, Enum):
+    HOMEOWNER = "Homeowner"
+    ELECTRIC_CAR_OWNER = "Electric car owner"
 
-class UserSchema(Schema):
-    UserID = fields.Integer(data_key="userId")
-    Username = fields.Str(data_key="userName")
-
-    def format_name(self, user):
-        return f"{user.FirstName} {user.LastName}"
-
-
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
-
-class UserProfileSchema(Schema):
-    UserID = fields.Integer(data_key="userId")
-    Username = fields.Str(data_key="userName")
-
-    
-user_profile_schema = UserProfileSchema()
-
-class UserCreationSchema(Schema):
-    EditorEmail = fields.Email(required=True)
-
+class CreateUserRequest(BaseModel):
+    username: str
+    first_name: str
+    password: str
+    last_name: str
+    email: EmailStr
+    address_of_home: str
+    city_of_home: str
+    post_code_of_home: str
+    user_type: UserType
+    mobile_number: str
