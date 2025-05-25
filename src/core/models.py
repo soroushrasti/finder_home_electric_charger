@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, Text
+from sqlalchemy import Column, Integer, String, Enum, Text, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum as PyEnum
 
@@ -22,3 +22,32 @@ class User(Base):
     postcode_of_home = Column(String(20), nullable=False)
     user_type = Column(Enum(UserType), nullable=False)
     mobile_number = Column(String(15), nullable=False)
+
+    def check_password(self, password: str) -> bool:
+        """Check if the provided password matches the user's password."""
+        # In a real application, you would hash the password and compare it
+        return self.password == password
+
+class Car(Base):
+    __tablename__ = 'cars'
+
+    car_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)  # Foreign key to User
+    model = Column(String(50), nullable=False)
+    year = Column(Integer, nullable=False)
+    color = Column(String(30), nullable=False)
+    license_plate = Column(String(15), unique=True, nullable=False)  # Unique license plate
+
+
+class ChargingLocation(Base):
+    __tablename__ = 'charging_locations'
+
+    charging_location_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)  # Foreign key to User
+    post_code = Column(String(20), nullable=False)
+    alley = Column(String(100), nullable=False)
+    street = Column(String(100), nullable=False)
+    home_phone_number = Column(String(15), nullable=False)
+    city = Column(String(100), nullable=False)  # City of the charging location
+    fast_charging = Column(Boolean, nullable=False)  # Fast charging option as a string (e.g., "Yes" or "No")
+

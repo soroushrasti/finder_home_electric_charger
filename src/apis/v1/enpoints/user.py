@@ -1,7 +1,7 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, Body, Path, Query, HTTPException
+from fastapi import APIRouter, Depends, Body, Path, Query, HTTPException, status
 from starlette import status
-
+from fastapi import  HTTPException, status
 from src.apis.v1.functionalities.user.service import UserService
 from src.apis.v1.functionalities.user.factory import get_user_service, UserServiceFactory
 from src.apis.v1.schemas.user import CreateUserRequest
@@ -36,3 +36,19 @@ async def create_user(
             detail=f"Error creating user: {str(e)}"
         )
 
+@router.get("/user/login", status_code=status.HTTP_200_OK)
+async def login_user(
+    username: str = Query(..., title="The username"),
+    password: str = Query(..., title="The password"),
+    user_svc: UserService = Depends(get_user_service)
+):
+    try:
+        user = user_svc.login_user(username, password)
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        return {"message": "Login successful", "user": user}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error logging in: {str(e)}"
+        )

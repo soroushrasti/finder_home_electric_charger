@@ -11,6 +11,8 @@ class UserRepositoryAbstract:
     def create_user(self, user_data):
         pass
 
+    def login_user(self, username, password):
+        pass
 
 
 class UserRepository(UserRepositoryAbstract):
@@ -26,3 +28,9 @@ class UserRepository(UserRepositoryAbstract):
         self.db.commit()
         self.db.refresh(new_user)
         return new_user
+
+    def login_user(self, username, password):
+        user = self.db.query(User).filter(User.username == username).first()
+        if user and user.check_password(password):
+            return user
+        return None
