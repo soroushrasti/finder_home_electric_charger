@@ -3,21 +3,19 @@ from starlette import status
 
 from src.apis.v1.functionalities.charging_location.factory import get_charging_loc_service
 from src.apis.v1.functionalities.charging_location.service import ChargingLocService
-from src.apis.v1.schemas.charging_location import CreateChargingLocRequest
+from src.apis.v1.schemas.charging_location import CreateChargingLocRequest,ChargingLocResponse
 
 router = APIRouter()
 
 
 
-@router.get("/users/{user_id}")
+@router.get("/charging_locations/users/{user_id}")
 async def get_charging_loc(
     user_id: int = Path(..., title="The user ID"),
     charging_loc_svc: ChargingLocService = Depends(get_charging_loc_service)
 ):
-    chargingLoc = charging_loc_svc.get_charging_loc(user_id)
-    if not chargingLoc:
-        raise HTTPException(status_code=404, detail="charging location not found")
-    return chargingLoc
+    charging_locs = charging_loc_svc.get_charging_loc(user_id)
+    return [ChargingLocResponse(**loc.__dict__).model_dump(by_alias=True) for loc in charging_locs]
 
 
 

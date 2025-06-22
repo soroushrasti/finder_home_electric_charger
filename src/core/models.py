@@ -23,10 +23,6 @@ class User(Base):
     user_type = Column(Enum(UserType), nullable=False)
     mobile_number = Column(String(15), nullable=False)
 
-    def check_password(self, password: str) -> bool:
-        """Check if the provided password matches the user's password."""
-        # In a real application, you would hash the password and compare it
-        return self.password == password
 
 class Car(Base):
     __tablename__ = 'cars'

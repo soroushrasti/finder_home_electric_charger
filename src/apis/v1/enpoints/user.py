@@ -46,7 +46,7 @@ async def login_user(
         user = user_svc.login_user(username, password)
         if not user:
             raise HTTPException(status_code=401, detail="Invalid credentials")
-        return {"message": "Login successful", "user": user}
+        return user
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

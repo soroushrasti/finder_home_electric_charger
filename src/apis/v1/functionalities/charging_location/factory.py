@@ -1,5 +1,7 @@
 from fastapi import Depends
-from sqlalchemy.orm import Session, create_session
+from sqlalchemy.orm import Session
+from src.config.database import create_session
+
 
 from src.apis.v1.functionalities.charging_location.service import ChargingLocService
 from src.core.db_repository.charging_location import ChargingLocRepositoryAbstract, ChargingLocRepository
