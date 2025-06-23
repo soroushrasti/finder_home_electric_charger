@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, Text, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Enum, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum as PyEnum
 
@@ -48,12 +48,12 @@ class ChargingLocation(Base):
     fast_charging = Column(Boolean, nullable=False)  # Fast charging option as a string (e.g., "Yes" or "No")
 
 class Booking(Base):
-    __tablename__ = 'bookings'
+    __tablename__ = 'booking'
 
     booking_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)  # Foreign key to User
     charging_location_id = Column(Integer, ForeignKey('charging_locations.charging_location_id'), nullable=False)  # Foreign key to ChargingLocation
-    start_time = Column(String(50), nullable=False)  # Start time of the booking
-    end_time = Column(String(50), nullable=False)  # End time of the booking
+    start_time = Column(DateTime, nullable=False)  # Start time of the booking
+    end_time = Column(DateTime, nullable=False)  # End time of the booking
     review_rate = Column(Integer, nullable=True)  # Review rating (1-5)
     review_message = Column(Text, nullable=True)  # Review message
