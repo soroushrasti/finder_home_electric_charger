@@ -8,7 +8,7 @@ from src.apis.v1.schemas.notification import CreateNotificationRequest, FindNoti
 router = APIRouter()
 
 
-@router.get("/bookings/{booking_id}")
+@router.get("/notifications/bookings/{booking_id}")
 async def get_notification_by_booking_id(
     booking_id: int = Path(..., title="The Booking ID"),
     notification_svc: NotificationService = Depends(get_notification_service),

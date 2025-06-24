@@ -32,8 +32,6 @@ class NotificationRepository(NotificationRepositoryAbstract):
 
         if find_notification_data.booking_id:
             query = query.filter(Notification.booking_id == find_notification_data.booking_id)
-        if find_notification_data.notification_id:
-            query = query.filter(Notification.booking_id == find_notification_data.notification_id)
         if find_notification_data.message:
             query = query.filter(Notification.booking_id == find_notification_data.message)
         if find_notification_data.is_read:

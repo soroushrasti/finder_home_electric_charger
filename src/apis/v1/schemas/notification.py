@@ -4,7 +4,6 @@ from typing import Optional
 
 
 class CreateNotificationRequest(BaseModel):
-    notification_id: int
     booking_id: int
     message:str
     is_read:bool
@@ -12,7 +11,6 @@ class CreateNotificationRequest(BaseModel):
 
 
 class FindNotificationRequest(BaseModel):
-    notification_id: Optional[int] =None
     booking_id: Optional[int] =None
     message: Optional[str] =None
     is_read: Optional[bool] =None

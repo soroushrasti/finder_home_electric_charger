@@ -8,8 +8,8 @@ class NotificationService:
     def __init__(self, notification_repo: NotificationRepository):
         self.notification_repo = notification_repo
 
-    def get_notifications(self, user_id: int):
-        return self.notification_repo.get_notification_by_id(user_id)
+    def get_notifications(self, booking_id: int):
+        return self.notification_repo.get_notification_by_id(booking_id)
 
     # Add to src/apis/v1/functionalities/user/service.py
     def create_notification(self, notification_data: dict):
