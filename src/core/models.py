@@ -58,11 +58,11 @@ class Booking(Base):
     review_rate = Column(Integer, nullable=True)  # Review rating (1-5)
     review_message = Column(Text, nullable=True)  # Review message
 
-    class Notification(Base):
-        __tablename__ = 'notification'
+class Notification(Base):
+    __tablename__ = 'notification'
 
-        notification_id = Column(Integer, primary_key=True, autoincrement=True)
-        booking_id = Column(Integer, ForeignKey('bookings.booking_id'), nullable=False)  # Foreign key to booking
-        message = Column(Text, nullable=True)  # message
-        level = Column(Text, nullable=True)  # level
-        is_read = Column(Boolean, nullable=True)  # is_read
+    notification_id = Column(Integer, primary_key=True, autoincrement=True)
+    booking_id = Column(Integer, ForeignKey('booking.booking_id'), nullable=False)  # Foreign key to booking
+    message = Column(Text, nullable=True)  # message
+    level = Column(Text, nullable=True)  # level
+    is_read = Column(Boolean, nullable=True)  # is_read
