@@ -32,16 +32,14 @@ class BookingRepository(BookingRepositoryAbstract):
 
         if find_booking_data.user_id:
             query = query.filter(Booking.user_id == find_booking_data.user_id)
-        if find_booking_data.booking_id:
-            query = query.filter(Booking.user_id == find_booking_data.booking_id)
         if find_booking_data.charging_location_id:
             query = query.filter(Booking.user_id == find_booking_data.charging_location_id)
         if find_booking_data.review_rate:
             query = query.filter(Booking.user_id == find_booking_data.review_rate)
-        if find_booking_data.startDate:
-            query = query.filter(Booking.user_id == find_booking_data.startDate)
-        if find_booking_data.endDate:
-            query = query.filter(Booking.user_id == find_booking_data.endDate)
+        if find_booking_data.start_time:
+            query = query.filter(Booking.user_id == find_booking_data.start_time)
+        if find_booking_data.end_time:
+            query = query.filter(Booking.user_id == find_booking_data.end_time)
         if find_booking_data.review_message:
             query = query.filter(Booking.user_id == find_booking_data.review_message)
 

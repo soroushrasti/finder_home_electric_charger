@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from src.apis.v1.functionalities.booking.factory import get_booking_service
 from src.apis.v1.functionalities.booking.service import BookingService
-from src.apis.v1.schemas.booking import CreateBookingRequest
+from src.apis.v1.schemas.booking import CreateBookingRequest, FindBookingRequest
 from starlette import status
 from src.apis.v1.schemas.car import FindCarRequest
 
@@ -20,7 +20,7 @@ async def get_booking_by_user_id(
 
 
 
-@router.post("/booking", status_code=status.HTTP_201_CREATED)
+@router.post("/add-booking", status_code=status.HTTP_201_CREATED)
 async def create_booking(
     booking_data: CreateBookingRequest = Body(...),
     booking_svc: BookingService = Depends(get_booking_service)
@@ -37,7 +37,7 @@ async def create_booking(
 
 @router.post("/find-booking", status_code=status.HTTP_200_OK)
 async def find_booking(
-    booking_data: FindCarRequest = Body(...),
+    booking_data: FindBookingRequest = Body(...),
     booking_svc: BookingService = Depends(get_booking_service)
 ):
     try:
@@ -46,5 +46,5 @@ async def find_booking(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Error creating booking: {str(e)}"
+            detail=f"Error finding booking: {str(e)}"
         )

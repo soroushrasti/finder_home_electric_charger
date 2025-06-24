@@ -13,10 +13,9 @@ class CreateBookingRequest(BaseModel):
 
 
 class FindBookingRequest(BaseModel):
-    booking_id: Optional[int] =None
     user_id: Optional[int] =None
     charging_location_id: Optional[int] =None
     review_rate: Optional[datetime] =None
     start_time: Optional[datetime] =None
     end_time: Optional[datetime] =None
-    endreview_message: Optional[str] =None
+    review_message: Optional[str] =None

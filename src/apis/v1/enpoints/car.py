@@ -19,7 +19,7 @@ async def get_car_by_user_id(
     return car
 
 
-@router.post("/car", status_code=status.HTTP_201_CREATED)
+@router.post("/add-car", status_code=status.HTTP_201_CREATED)
 async def create_car(
     car_data: CreateCarRequest = Body(...),
     car_svc: CarService = Depends(get_car_service)

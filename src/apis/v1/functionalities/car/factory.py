@@ -22,6 +22,6 @@ class CarServiceFactory:
 def get_car_service(
         db: Session = Depends(create_session)
         ):
-    repo = CarRepository(db=db)
+    repo = CarRepository(db_session=db)
     factory = CarServiceFactory(repo=repo)
     return factory.get_service()
