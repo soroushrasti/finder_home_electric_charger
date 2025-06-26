@@ -1,5 +1,8 @@
+from cmath import e
+from fastapi import HTTPException
 from src.apis.v1.schemas.car import FindCarRequest
 from src.core.models import Car
+from starlette import status
 
 
 class CarRepositoryAbstract:
@@ -21,7 +24,20 @@ class CarRepository(CarRepositoryAbstract):
 
     def update_car(self, car_id: int, car_data: dict):
         # Logic to update an existing car in the database
-        pass
+        new_car = Car(**car_data)
+        query = self.db_session.query(Car).filter(Car.car_id == car_id).first()
+        if query:
+            query.user_id= new_car.user_id
+            query.model = new_car.model
+            query.color = new_car.color
+            query.year = new_car.year
+            query.license_plate = new_car.license_plate
+            self.db_session.commit()
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_BAD_REQUEST,
+                detail=f"Error finding booking: {str(e)}"
+            )
 
     def delete_car(self, car_id: int):
         # Logic to delete a car from the database

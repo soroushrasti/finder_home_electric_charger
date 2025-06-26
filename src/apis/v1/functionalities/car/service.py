@@ -15,3 +15,6 @@ class CarService:
 
     def find_car(self, find_car_data: FindCarRequest):
         return self.car_repo.find_car(find_car_data)
+
+def update_car(self, car_id: int):
+        return self.car_repo.update_car(car_id)

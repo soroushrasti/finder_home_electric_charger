@@ -51,7 +51,7 @@ class Booking(Base):
     __tablename__ = 'booking'
 
     booking_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)  # Foreign key to User
+    car_id = Column(Integer, ForeignKey('cars.car_id'), nullable=False)  # Foreign key to cars
     charging_location_id = Column(Integer, ForeignKey('charging_locations.charging_location_id'), nullable=False)  # Foreign key to ChargingLocation
     start_time = Column(DateTime, nullable=False)  # Start time of the booking
     end_time = Column(DateTime, nullable=False)  # End time of the booking
@@ -66,3 +66,13 @@ class Notification(Base):
     message = Column(Text, nullable=True)  # message
     level = Column(Text, nullable=True)  # level
     is_read = Column(Boolean, nullable=True)  # is_read
+
+
+class Review(Base):
+    __tablename__ = 'review'
+
+    review_id = Column(Integer, primary_key=True, autoincrement=True)
+    review_rate = Column(Integer, nullable=True)
+    review_message = Column(Text, nullable=True)
+    car_id = Column(Integer, ForeignKey('cars'), nullable=False)
+    charger_location_id = Column(Integer, ForeignKey('charger_location'), nullable=False) 

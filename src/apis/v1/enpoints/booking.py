@@ -1,19 +1,21 @@
+from cmath import e
 from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from src.apis.v1.functionalities.booking.factory import get_booking_service
 from src.apis.v1.functionalities.booking.service import BookingService
-from src.apis.v1.schemas.booking import CreateBookingRequest, FindBookingRequest
+from src.apis.v1.schemas.booking import AddBookingRequest, CreateBookingRequest, FindBookingRequest, UpdateBookingRequest
+from src.core.models import Booking
 from starlette import status
 from src.apis.v1.schemas.car import FindCarRequest
 
 router = APIRouter()
 
 
-@router.get("/bookings/users/{user_id}")
-async def get_booking_by_user_id(
-    user_id: int = Path(..., title="The user ID"),
+@router.get("/bookings/{car_id}")
+async def get_booking_by_car_id(
+    car_id: int = Path(..., title="The user ID"),
     booking_svc: BookingService = Depends(get_booking_service),
 ):
-    booking = booking_svc.get_bookings(user_id)
+    booking = booking_svc.get_bookings(car_id)
     if not booking:
         return []
     return booking
@@ -48,3 +50,12 @@ async def find_booking(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Error finding booking: {str(e)}"
         )
+
+@router.post("/update_booking/{booking_id}")
+async def update_booking(
+    booking_data: UpdateBookingRequest = Body(...),
+    booking_svc: BookingService = Depends(get_booking_service)
+):
+    new_booking = booking_svc.update_booking(booking_data)
+
+

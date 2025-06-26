@@ -3,7 +3,7 @@ from starlette import status
 
 from src.apis.v1.functionalities.car.factory import get_car_service
 from src.apis.v1.functionalities.car.service import CarService
-from src.apis.v1.schemas.car import CreateCarRequest, FindCarRequest
+from src.apis.v1.schemas.car import CreateCarRequest, FindCarRequest, UpdateCarRequest
 
 router = APIRouter()
 
@@ -47,3 +47,11 @@ async def create_car(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Error creating car: {str(e)}"
         )
+
+
+@router.post("/update_car/{car_id}")
+async def update_car(
+    car_data: UpdateCarRequest = Body(...),
+    car_svc: CarService = Depends(get_car_service)
+):
+    new_car = car_svc.update_car(car_data)

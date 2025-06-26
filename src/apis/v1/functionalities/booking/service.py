@@ -8,8 +8,8 @@ class BookingService:
     def __init__(self, booking_repo: BookingRepository):
         self.booking_repo = booking_repo
 
-    def get_bookings(self, user_id: int):
-        return self.booking_repo.get_booking_by_id(user_id)
+    def get_bookings(self, car_id: int):
+        return self.booking_repo.get_booking_by_id(car_id)
 
     # Add to src/apis/v1/functionalities/user/service.py
     def create_booking(self, booking_data: dict):
@@ -17,3 +17,8 @@ class BookingService:
 
     def find_booking(self, find_booking_data: FindBookingRequest):
         return self.booking_repo.find_booking(find_booking_data)
+
+    def update_booking(self, booking_id: int):
+        return self.booking_repo.update_booking(booking_id)
+
+    

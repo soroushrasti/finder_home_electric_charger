@@ -16,3 +16,10 @@ class FindCarRequest(BaseModel):
     color: Optional[str] = None
     year: Optional[int] = None
     license_plate: Optional[str] = None
+
+class UpdateCarRequest(BaseModel):
+    user_id: Optional[int] =None
+    model: Optional[str] = None
+    color: Optional[str] = None
+    year: Optional[int] = None
+    license_plate: Optional[str] = None
