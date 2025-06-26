@@ -51,7 +51,7 @@ class Booking(Base):
     __tablename__ = 'booking'
 
     booking_id = Column(Integer, primary_key=True, autoincrement=True)
-    car_id = Column(Integer, ForeignKey('cars.car_id'), nullable=False)  # Foreign key to cars
+    car_id = Column(Integer, ForeignKey('cars.car_id'), nullable=True)  # Foreign key to cars
     charging_location_id = Column(Integer, ForeignKey('charging_locations.charging_location_id'), nullable=False)  # Foreign key to ChargingLocation
     start_time = Column(DateTime, nullable=False)  # Start time of the booking
     end_time = Column(DateTime, nullable=False)  # End time of the booking
@@ -74,5 +74,5 @@ class Review(Base):
     review_id = Column(Integer, primary_key=True, autoincrement=True)
     review_rate = Column(Integer, nullable=True)
     review_message = Column(Text, nullable=True)
-    car_id = Column(Integer, ForeignKey('cars'), nullable=False)
-    charger_location_id = Column(Integer, ForeignKey('charger_location'), nullable=False) 
+    car_id = Column(Integer, ForeignKey('cars.car_id'), nullable=False)
+    charging_location_id = Column(Integer, ForeignKey('charging_locations.charging_location_id'), nullable=False)
