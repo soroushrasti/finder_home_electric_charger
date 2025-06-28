@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import HTTPException
 from src.apis.v1.enpoints import booking
 from src.apis.v1.schemas.booking import FindBookingRequest
-from src.core.models import Booking
+from src.core.models import Booking, User, ChargingLocation, Car
 from starlette import status
 
 
@@ -49,12 +49,13 @@ class BookingRepository(BookingRepositoryAbstract):
             pass
 
     def find_booking(self, find_booking_data: FindBookingRequest):
-        query = self.db_session.query(Booking)
+        query = (self.db_session.query(Booking).join(User).filter(User.user_id == Booking.user_id).
+                 join(ChargingLocation).filter(ChargingLocation.user_id == Booking.user_id))
 
         if find_booking_data.car_id:
             query = query.filter(Booking.car_id == find_booking_data.car_id)
         if find_booking_data.charging_location_id:
-            query = query.filter(Booking.car_id == find_booking_data.charging_location_id)
+            query = query.filter(Booking.charging_location_id == find_booking_data.charging_location_id)
         if find_booking_data.review_rate:
             query = query.filter(Booking.car_id == find_booking_data.review_rate)
         if find_booking_data.start_time:
@@ -63,5 +64,9 @@ class BookingRepository(BookingRepositoryAbstract):
             query = query.filter(Booking.car_id == find_booking_data.end_time)
         if find_booking_data.review_message:
             query = query.filter(Booking.car_id == find_booking_data.review_message)
+        if find_booking_data.charger_location_owner_user_id:
+            query = query.filter(ChargingLocation.user_id == find_booking_data.charger_location_owner_user_id)
+        if find_booking_data.car_owner_user_id:
+            query = query.filter(Car.user_id == find_booking_data.car_owner_user_id)
 
         return query.all()
