@@ -21,8 +21,6 @@ class BookingRepository(BookingRepositoryAbstract):
 
     def create_booking(self, booking_data: dict):
         new_booking = Booking(**booking_data)
-        self.db_session.remove(new_booking.start_time)
-        self.db_session.remove(new_booking.end_time)
         new_booking.end_time = None
         new_booking.start_time = datetime.now()
         self.db_session.add(new_booking)

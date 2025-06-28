@@ -54,7 +54,7 @@ class Booking(Base):
     car_id = Column(Integer, ForeignKey('cars.car_id'), nullable=True)  # Foreign key to cars
     charging_location_id = Column(Integer, ForeignKey('charging_locations.charging_location_id'), nullable=False)  # Foreign key to ChargingLocation
     start_time = Column(DateTime, nullable=False)  # Start time of the booking
-    end_time = Column(DateTime, nullable=False)  # End time of the booking
+    end_time = Column(DateTime, nullable=True)  # End time of the booking
     review_rate = Column(Integer, nullable=True)  # Review rating (1-5)
     review_message = Column(Text, nullable=True)  # Review message
 
