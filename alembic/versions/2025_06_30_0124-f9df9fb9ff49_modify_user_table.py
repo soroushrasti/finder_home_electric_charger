@@ -1,8 +1,8 @@
 """modify user table
 
-Revision ID: 0b26f2e66227
+Revision ID: f9df9fb9ff49
 Revises: 420e5c313c30
-Create Date: 2025-06-29 23:23:29.353290
+Create Date: 2025-06-30 01:24:16.081065
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0b26f2e66227'
+revision = 'f9df9fb9ff49'
 down_revision = '420e5c313c30'
 branch_labels = None
 depends_on = None
@@ -48,12 +48,16 @@ def upgrade() -> None:
     op.create_table('charging_locations',
     sa.Column('charging_location_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('post_code', sa.String(length=20), nullable=False),
-    sa.Column('alley', sa.String(length=100), nullable=False),
-    sa.Column('street', sa.String(length=100), nullable=False),
-    sa.Column('home_phone_number', sa.String(length=15), nullable=False),
-    sa.Column('city', sa.String(length=100), nullable=False),
-    sa.Column('fast_charging', sa.Boolean(), nullable=False),
+    sa.Column('post_code', sa.String(length=20), nullable=True),
+    sa.Column('alley', sa.String(length=100), nullable=True),
+    sa.Column('street', sa.String(length=100), nullable=True),
+    sa.Column('home_phone_number', sa.String(length=15), nullable=True),
+    sa.Column('city', sa.String(length=100), nullable=True),
+    sa.Column('fast_charging', sa.Boolean(), nullable=True),
+    sa.Column('name', sa.String(length=100), nullable=True),
+    sa.Column('price_per_hour', sa.Float(), nullable=True),
+    sa.Column('power_output', sa.Float(), nullable=True),
+    sa.Column('description', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
     sa.PrimaryKeyConstraint('charging_location_id')
     )

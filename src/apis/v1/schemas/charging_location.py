@@ -2,13 +2,17 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 class CreateChargingLocRequest(BaseModel):
-    user_id: int = Field(..., alias="userId")
-    post_code: str = Field(..., alias="postCode")
-    alley: str
-    street: str
-    home_phone_number: str = Field(..., alias="homePhoneNumber")
-    city: str
-    fast_charging: bool = Field(..., alias="fastCharging")
+    user_id: int
+    post_code: Optional[str] = None
+    city: Optional[str] = None
+    alley: Optional[str] = None
+    street: Optional[str] = None
+    home_phone_number: Optional[str] = None
+    fast_charging: Optional[bool] = False  # Fast charging option as a boolean
+    description: Optional[str] = None
+    price_per_hour: Optional[float] = None
+    power_output: Optional[float] = None  # in kW
+    name: Optional[str] = None
 
     class Config:
         allow_population_by_field_name = True
@@ -37,3 +41,4 @@ class FindChargingLocRequest(BaseModel):
         home_phone_number :Optional[str] =None
         city :Optional[str] =None
         fast_charging :Optional[str] =None
+        user_id :Optional[int] =None

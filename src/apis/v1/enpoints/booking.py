@@ -51,7 +51,7 @@ async def find_booking(
             detail=f"Error finding booking: {str(e)}"
         )
 
-@router.post("/update_booking/{booking_id}")
+@router.post("/update-booking/{booking_id}")
 async def update_booking(
     booking_data: UpdateBookingRequest = Body(...),
     booking_id: int = Path(..., title="The Booking ID"),

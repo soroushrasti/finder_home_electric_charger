@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, Text, ForeignKey, Boolean, DateTime
+from sqlalchemy import Column, Integer,Float, String, Enum, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum as PyEnum
 
@@ -37,12 +37,17 @@ class ChargingLocation(Base):
 
     charging_location_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)  # Foreign key to User
-    post_code = Column(String(20), nullable=False)
-    alley = Column(String(100), nullable=False)
-    street = Column(String(100), nullable=False)
-    home_phone_number = Column(String(15), nullable=False)
-    city = Column(String(100), nullable=False)  # City of the charging location
-    fast_charging = Column(Boolean, nullable=False)  # Fast charging option as a string (e.g., "Yes" or "No")
+    post_code = Column(String(20), nullable=True)
+    alley = Column(String(100), nullable=True)
+    street = Column(String(100), nullable=True)
+    home_phone_number = Column(String(15), nullable=True)
+    city = Column(String(100), nullable=True)  # City of the charging location
+    fast_charging = Column(Boolean, nullable=True)  # Fast charging option as a string (e.g., "Yes" or "No")
+    name = Column(String(100), nullable=True)  # Name of the charging location
+    price_per_hour = Column(Float, nullable=True)  # Price per hour for charging
+    power_output = Column(Float, nullable=True)
+    description = Column(Text, nullable=True)  # Description of the charging location
+
 
 class Booking(Base):
     __tablename__ = 'booking'
