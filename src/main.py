@@ -8,11 +8,10 @@ from src.apis.v1.enpoints.charging_location import router as charging_location_r
 from src.apis.v1.enpoints.car import router as car_router
 from src.apis.v1.enpoints.booking import router as booking_router
 from src.apis.v1.enpoints.notification import router as notification_router
-
 from src.config.base import BaseConfig
 from src.config.logging_config import setup_logging
 from src.core.utils.error_middleware import LogErrorsMiddleware
-from src.core.utils.middleware import RequestHeadersMiddleware
+from src.core.utils.middleware import RequestHeadersMiddleware, LoggingMiddleware
 
 # Set up logging configuration
 setup_logging()
@@ -34,6 +33,7 @@ origins = [
 
 app.add_middleware(LogErrorsMiddleware)
 app.add_middleware(RequestHeadersMiddleware)
+app.add_middleware(LoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

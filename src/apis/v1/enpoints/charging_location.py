@@ -20,7 +20,7 @@ async def get_charging_loc(
 
 
 
-@router.post("/charging_location", status_code=status.HTTP_201_CREATED)
+@router.post("/add-charging_location", status_code=status.HTTP_201_CREATED)
 async def create_charging_loc(
     charging_loc_data: CreateChargingLocRequest = Body(...),
     charging_loc_svc: ChargingLocService = Depends(get_charging_loc_service)

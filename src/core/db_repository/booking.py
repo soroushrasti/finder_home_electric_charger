@@ -49,8 +49,8 @@ class BookingRepository(BookingRepositoryAbstract):
             pass
 
     def find_booking(self, find_booking_data: FindBookingRequest):
-        query = (self.db_session.query(Booking).join(User).filter(User.user_id == Booking.user_id).
-                 join(ChargingLocation).filter(ChargingLocation.user_id == Booking.user_id))
+        query = (self.db_session.query(Booking).join(Car).filter(Car.car_id == Car.car_id).
+                 join(ChargingLocation).filter(ChargingLocation.charging_location_id == Booking.charging_location_id))
 
         if find_booking_data.car_id:
             query = query.filter(Booking.car_id == find_booking_data.car_id)
