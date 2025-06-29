@@ -31,9 +31,10 @@ class BookingRepository(BookingRepositoryAbstract):
         new_booking = Booking(**booking_data)
         query = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
         if query:
-            query.charging_location_id = new_booking.car_id
+            query.car_id = new_booking.car_id
+            query.charging_location_id = new_booking.charging_location_id
             query.start_time = new_booking.start_time
-            query.end_time = new_booking.end_time
+            query.end_time = None
             query.review_rate = new_booking.review_rate
             query.review_message = new_booking.review_message
             self.db_session.commit()

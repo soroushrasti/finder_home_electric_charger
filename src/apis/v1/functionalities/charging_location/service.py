@@ -10,3 +10,6 @@ class ChargingLocService:
 
     def create_charging_loc(self, charging_loc_data: dict):
         return self.charging_loc_repo.create_charging_loc(charging_loc_data)
+
+    def find_charging_loc(self, charging_loc_data: dict):
+        return self.charging_loc_repo.find_charging_loc(charging_loc_data)

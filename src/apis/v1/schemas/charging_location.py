@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, Field
 
 class CreateChargingLocRequest(BaseModel):
@@ -28,3 +29,11 @@ class ChargingLocResponse(BaseModel):
     class Config:
         allow_population_by_field_name = True
         populate_by_name = True
+
+class FindChargingLocRequest(BaseModel):
+        post_code :Optional[str] =None
+        alley:Optional[str] =None
+        street :Optional[str] =None
+        home_phone_number :Optional[str] =None
+        city :Optional[str] =None
+        fast_charging :Optional[str] =None
