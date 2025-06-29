@@ -11,7 +11,7 @@ class UserRepositoryAbstract:
     def create_user(self, user_data):
         pass
 
-    def get_user_by_username(self, username, password):
+    def get_user_by_email(self, username, password):
         pass
 
 
@@ -29,6 +29,6 @@ class UserRepository(UserRepositoryAbstract):
         self.db.refresh(new_user)
         return new_user
 
-    def get_user_by_username(self, username, password):
-        user = self.db.query(User).filter(User.username == username).first()
+    def get_user_by_email(self, email, password):
+        user = self.db.query(User).filter(User.email == email).first()
         return user

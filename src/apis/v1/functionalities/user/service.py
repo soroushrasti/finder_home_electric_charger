@@ -24,8 +24,8 @@ class UserService:
         user_data['password'] = hash_password(user_data['password'])
         return self.user_repo.create_user(user_data)
 
-    def login_user(self, username, password):
-        user: User = self.user_repo.get_user_by_username(username, password)
+    def login_user(self, email, password):
+        user: User = self.user_repo.get_user_by_email(email, password)
         if user and check_password(password, user.password):
             return user
         return None
