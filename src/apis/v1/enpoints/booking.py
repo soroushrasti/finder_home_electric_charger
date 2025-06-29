@@ -54,8 +54,9 @@ async def find_booking(
 @router.post("/update_booking/{booking_id}")
 async def update_booking(
     booking_data: UpdateBookingRequest = Body(...),
+    booking_id: int = Path(..., title="The Booking ID"),
     booking_svc: BookingService = Depends(get_booking_service)
 ):
-    new_booking = booking_svc.update_booking(booking_data)
+    new_booking = booking_svc.update_booking(booking_data, booking_id)
 
 

@@ -28,16 +28,23 @@ class BookingRepository(BookingRepositoryAbstract):
         return new_booking
 
     def update_booking(self, booking_id: int, booking_data: dict):
-        new_booking = Booking(**booking_data)
         query = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
         if query:
-            query.car_id = new_booking.car_id
-            query.charging_location_id = new_booking.charging_location_id
-            query.start_time = new_booking.start_time
-            query.end_time = None
-            query.review_rate = new_booking.review_rate
-            query.review_message = new_booking.review_message
+            if booking_data.car_id :
+             query.car_id = booking_data.car_id
+            if booking_data.charging_location_id:
+             query.charging_location_id = booking_data.charging_location_id
+            if booking_data.start_time:
+             query.start_time = booking_data.start_time
+            if booking_data.end_time:
+             query.end_time = booking_data.end_time
+            if booking_data.review_rate:
+             query.review_rate = booking_data.review_rate
+            if booking_data.review_message:
+             query.review_message = booking_data.review_message
             self.db_session.commit()
+            return query
+
         else:
             raise HTTPException(
                 status_code=status.HTTP_404_BAD_REQUEST,
@@ -45,7 +52,7 @@ class BookingRepository(BookingRepositoryAbstract):
             )
 
 
-        def delete_booking(self, booking_id: int):
+    def delete_booking(self, booking_id: int):
             # Logic to delete a car from the database
             pass
 
