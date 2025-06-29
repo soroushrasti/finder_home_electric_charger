@@ -32,7 +32,9 @@ class CarRepository(CarRepositoryAbstract):
             query.color = new_car.color
             query.year = new_car.year
             query.license_plate = new_car.license_plate
+            self.db_session.add(query)
             self.db_session.commit()
+            return query
         else:
             raise HTTPException(
                 status_code=status.HTTP_404_BAD_REQUEST,

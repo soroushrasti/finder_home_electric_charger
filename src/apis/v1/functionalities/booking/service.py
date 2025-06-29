@@ -18,7 +18,7 @@ class BookingService:
     def find_booking(self, find_booking_data: FindBookingRequest):
         return self.booking_repo.find_booking(find_booking_data)
 
-    def update_booking(self, booking_id: int):
-        return self.booking_repo.update_booking(booking_id)
+    def update_booking(self, booking_data: dict, booking_id: int):
+        return self.booking_repo.update_booking(booking_id , booking_data)
 
     
