@@ -24,16 +24,20 @@ class CarRepository(CarRepositoryAbstract):
 
     def update_car(self, car_id: int, car_data: dict):
         # Logic to update an existing car in the database
-        new_car = Car(**car_data)
         query = self.db_session.query(Car).filter(Car.car_id == car_id).first()
         if query:
-            query.user_id= new_car.user_id
-            query.model = new_car.model
-            query.color = new_car.color
-            query.year = new_car.year
-            query.license_plate = new_car.license_plate
-            self.db_session.add(query)
+            if car_data.user_id:
+                query.user_id= car_data.user_id
+            if car_data.model:
+                 query.model = car_data.model
+            if car_data.color:
+                query.color = car_data.color
+            if car_data.year:
+                query.year = car_data.year
+            if car_data.license_plate:
+                query.license_plate = car_data.license_plate
             self.db_session.commit()
+            
             return query
         else:
             raise HTTPException(

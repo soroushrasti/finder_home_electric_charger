@@ -52,6 +52,7 @@ async def create_car(
 @router.post("/update_car/{car_id}")
 async def update_car(
     car_data: UpdateCarRequest = Body(...),
+    car_id: int = Path(..., title="The Car ID"),
     car_svc: CarService = Depends(get_car_service)
 ):
     updated_car = car_svc.update_car(car_data)

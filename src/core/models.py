@@ -1,3 +1,5 @@
+from numbers import Complex
+
 from sqlalchemy import Column, Integer,Float, String, Enum, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum as PyEnum
@@ -78,3 +80,13 @@ class Review(Base):
     review_message = Column(Text, nullable=True)
     car_id = Column(Integer, ForeignKey('cars.car_id'), nullable=False)
     charging_location_id = Column(Integer, ForeignKey('charging_locations.charging_location_id'), nullable=False)
+
+
+class Pricing(Base):
+    __tablename__ = 'pricing'
+
+    pricing_id = Column(Integer, primary_key=True, autoincrement=True)
+    booking_id = Column(Integer, ForeignKey('booking.booking_id'), nullable=False)
+    currency = Column(Text, nullable=True)
+    total_value = Column(Float, nullable=True)
+    price_per_khw = Column(Float, nullable=True)

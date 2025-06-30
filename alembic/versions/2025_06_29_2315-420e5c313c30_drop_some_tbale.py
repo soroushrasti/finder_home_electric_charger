@@ -23,7 +23,7 @@ def upgrade() -> None:
     )
     op.drop_table('cars')
     op.drop_table('charging_locations')
-    op,drop_table('review')
+    op.drop_table('review')
     op.drop_table('booking')
     op.drop_table('notification')
     # ### end Alembic commands ###

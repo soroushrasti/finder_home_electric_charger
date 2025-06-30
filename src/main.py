@@ -8,6 +8,8 @@ from src.apis.v1.enpoints.charging_location import router as charging_location_r
 from src.apis.v1.enpoints.car import router as car_router
 from src.apis.v1.enpoints.booking import router as booking_router
 from src.apis.v1.enpoints.notification import router as notification_router
+from src.apis.v1.enpoints.pricing import router as pricing_router
+
 from src.config.base import BaseConfig
 from src.config.logging_config import setup_logging
 from src.core.utils.error_middleware import LogErrorsMiddleware
@@ -47,6 +49,7 @@ app.include_router(charging_location_router, tags=["charging_location router"])
 app.include_router(car_router, tags=["car router"])
 app.include_router(booking_router, tags=["booking router"])
 app.include_router(notification_router, tags=["notification router"])
+app.include_router(pricing_router, tags=["pricing router"])
 
 
 
