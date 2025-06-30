@@ -78,3 +78,13 @@ class Review(Base):
     review_message = Column(Text, nullable=True)
     car_id = Column(Integer, ForeignKey('cars.car_id'), nullable=False)
     charging_location_id = Column(Integer, ForeignKey('charging_locations.charging_location_id'), nullable=False)
+
+
+class Pricing(Base):
+    __tablename__ = 'pricing'
+
+    pricing_id = Column(Integer, primary_key=True, autoincrement=True)
+    booking_id = Column(Integer, ForeignKey('booking.booking_id'), nullable=False)
+    currency = Column(Text, nullable=True)
+    total_value = Column(complex, nullable=True)
+    price_per_khw = Column(complex, nullable=True)
