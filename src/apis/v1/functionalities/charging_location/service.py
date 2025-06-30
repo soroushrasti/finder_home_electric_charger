@@ -11,5 +11,8 @@ class ChargingLocService:
     def create_charging_loc(self, charging_loc_data: dict):
         return self.charging_loc_repo.create_charging_loc(charging_loc_data)
 
-    def find_charging_loc(self, charging_loc_data):
-        return self.charging_loc_repo.find_charging_loc(charging_loc_data)
+    def find_charging_locs(self, charging_loc_data):
+        locations= self.charging_loc_repo.find_charging_loc(charging_loc_data)
+        for location in locations:
+            location.is_available = True
+        return locations

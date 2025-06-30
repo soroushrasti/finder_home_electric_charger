@@ -6,8 +6,8 @@ from typing import Optional
 class CreateBookingRequest(BaseModel):
     car_id: int
     charging_location_id: int
-    review_rate:Optional[datetime]
-    review_message: Optional[str]
+    review_rate:Optional[datetime] = None
+    review_message: Optional[str] = None
 
 
 class FindBookingRequest(BaseModel):

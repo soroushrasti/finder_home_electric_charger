@@ -40,5 +40,5 @@ class FindChargingLocRequest(BaseModel):
         street :Optional[str] =None
         home_phone_number :Optional[str] =None
         city :Optional[str] =None
-        fast_charging :Optional[str] =None
+        fast_charging :Optional[bool] =False
         user_id :Optional[int] =None
