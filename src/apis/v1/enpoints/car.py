@@ -54,4 +54,5 @@ async def update_car(
     car_data: UpdateCarRequest = Body(...),
     car_svc: CarService = Depends(get_car_service)
 ):
-    new_car = car_svc.update_car(car_data)
+    updated_car = car_svc.update_car(car_data)
+    return updated_car
