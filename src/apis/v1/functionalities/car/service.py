@@ -17,4 +17,4 @@ class CarService:
         return self.car_repo.find_car(find_car_data)
 
     def update_car(self,car_data:dict,  car_id: int):
-        return self.car_repo.update_car(car_data, car_id)
+        return self.car_repo.update_car(car_id, car_data)
