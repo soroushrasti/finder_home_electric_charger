@@ -1,3 +1,5 @@
+from numbers import Complex
+
 from sqlalchemy import Column, Integer,Float, String, Enum, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum as PyEnum
@@ -86,5 +88,5 @@ class Pricing(Base):
     pricing_id = Column(Integer, primary_key=True, autoincrement=True)
     booking_id = Column(Integer, ForeignKey('booking.booking_id'), nullable=False)
     currency = Column(Text, nullable=True)
-    total_value = Column(complex, nullable=True)
-    price_per_khw = Column(complex, nullable=True)
+    total_value = Column(Float, nullable=True)
+    price_per_khw = Column(Float, nullable=True)
