@@ -17,7 +17,7 @@ class PricingRepository(PricingRepositoryAbstract):
         return new_pricing
 
     def find_pricing(self, find_pricing_data: FindPricingRequest):
-        query = (self.db_session.query(Pricing).join(Car).filter(Car.car_id == Car.car_id).
+        query = (self.db_session.query(Pricing).join(Car).filter(Car.car_id == Pricing.car_id).
                  join(ChargingLocation).filter(ChargingLocation.charging_location_id ==Pricing.charging_location_id))
 
         if find_pricing_data.pricing_id:

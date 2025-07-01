@@ -6,9 +6,6 @@ class PricingService:
     def __init__(self, pricing_repo: PricingRepository):
         self.pricing_repo = pricing_repo
 
-    def __init__(self, pricing_repo: PricingRepository):
-        self.pricing_repo = pricing_repo
-
     def create_pricing(self, pricing_data: dict):
         return self.pricing_repo.create_pricing(pricing_data)
 

@@ -9,6 +9,7 @@ from src.apis.v1.enpoints.car import router as car_router
 from src.apis.v1.enpoints.booking import router as booking_router
 from src.apis.v1.enpoints.notification import router as notification_router
 from src.apis.v1.enpoints.pricing import router as pricing_router
+from src.apis.v1.enpoints.activity import router as activity_router
 
 from src.config.base import BaseConfig
 from src.config.logging_config import setup_logging
@@ -50,6 +51,7 @@ app.include_router(car_router, tags=["car router"])
 app.include_router(booking_router, tags=["booking router"])
 app.include_router(notification_router, tags=["notification router"])
 app.include_router(pricing_router, tags=["pricing router"])
+app.include_router(activity_router, tags=["activity router"])
 
 
 
