@@ -94,5 +94,6 @@ class Pricing(Base):
 class Activity(Base):
     __tablename__ = 'activity'
 
+    activity_id = Column(Integer, primary_key=True, autoincrement=True)
     car_owner_user_id = Column(Integer, nullable=True)
     charger_location_user_id = Column(Integer, nullable=True)

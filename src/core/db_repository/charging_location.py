@@ -1,4 +1,4 @@
-from src.core.models import Booking, ChargingLocation
+from src.core.models import Booking, ChargingLocation, User
 from src.apis.v1.schemas.charging_location import FindChargingLocRequest
 
 
@@ -27,7 +27,7 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         pass
 
     def find_charging_loc(self, find_charging_location_data: FindChargingLocRequest):
-        query = self.db_session.query(ChargingLocation).join(Booking).filter(Booking.booking_id == ChargingLocation. booking_id)
+        query = self.db_session.query(ChargingLocation).join(User).filter(User.user_id == ChargingLocation. user_id)
 
         if find_charging_location_data.post_code:
             query = query.filter(ChargingLocation.post_code == find_charging_location_data.post_code)

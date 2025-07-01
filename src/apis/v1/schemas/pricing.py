@@ -5,8 +5,8 @@ class CreatePricingRequest(BaseModel):
     pricing_id: int
     booking_id: int
     currency: str
-    total_value: complex
-    price_per_khw: complex
+    total_value: float
+    price_per_khw: float
 
 class FindPricingRequest(BaseModel):
     charger_location_owner_user_id :Optional[int] =None

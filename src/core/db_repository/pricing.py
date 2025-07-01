@@ -1,5 +1,5 @@
 from src.apis.v1.schemas.pricing import FindPricingRequest
-from src.core.models import Car, ChargingLocation, Pricing
+from src.core.models import Car, ChargingLocation, Pricing, Booking
 
 
 class PricingRepositoryAbstract:
@@ -18,7 +18,8 @@ class PricingRepository(PricingRepositoryAbstract):
 
     def find_pricing(self, find_pricing_data: FindPricingRequest):
         query = (self.db_session.query(Pricing).join(Car).filter(Car.car_id == Pricing.car_id).
-                 join(ChargingLocation).filter(ChargingLocation.charging_location_id ==Pricing.charging_location_id))
+                 join(ChargingLocation).filter(ChargingLocation.charging_location_id ==Pricing.charging_location_id).
+                 join(Booking)).filter(Booking.booking_id == Pricing.booking_id)
 
         if find_pricing_data.pricing_id:
             query = query.filter(Pricing.pricing_id == find_pricing_data.pricing_id)
