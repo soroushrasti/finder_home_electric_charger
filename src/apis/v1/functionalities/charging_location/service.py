@@ -1,5 +1,7 @@
+from typing import List
+
 from src.core.db_repository.charging_location import ChargingLocRepositoryAbstract, ChargingLocRepository
-from src.core.models import Booking
+from src.core.models import Booking, ChargingLocation
 
 
 class ChargingLocService:
@@ -13,14 +15,13 @@ class ChargingLocService:
         return self.charging_loc_repo.create_charging_loc(charging_loc_data)
 
     def find_charging_locs(self, charging_loc_data):
-        locations= self.charging_loc_repo.find_charging_loc(charging_loc_data)
+        locations : List[ChargingLocation]= self.charging_loc_repo.find_charging_loc(charging_loc_data)
         
         for location in locations:
-            # location.is_available = True
-            if location.filter(Booking.end_time):
-              location.is_available = True
+            bookings: List[Booking] = self.charging_loc_repo.get_booking_by_charging_lcaotion_id(location.charging_location_id)
+            if any([booking.end_time for booking in bookings]):
+                location.is_available = False
             else:
-               location.is_available = False
-               return
+                location.is_available = True
 
         return locations

@@ -14,18 +14,16 @@ class ActivityService:
         self.activity_repo = activity_repo
 
     def find_activity(self, find_activity_data: FindActivityRequest):
-        activities = self.activity_repo.find_activity(find_activity_data)
 
-        for activity in activities:
+       total_price = sum(self.activity_repo.calculate_total_pricing(find_activity_data))
+       number_bookings = None
+       number_locations = None
 
-        # total price
-           total_price = activity.sum(Pricing.total_value)
-        # number of bookings
-           number_bookings = activity.count(Booking.booking_id)
-        # number of locations
-           number_locations = activity.count(ChargingLocation.charging_location_id)
-
-        return activities
+       return {
+            "total_price": total_price,
+            "number_bookings": number_bookings,
+            "number_locations": number_locations
+        }
 
 def get_activity_service(
         db: Session = Depends(create_session)
