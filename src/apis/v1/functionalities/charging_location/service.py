@@ -20,8 +20,8 @@ class ChargingLocService:
         for location in locations:
             bookings: List[Booking] = self.charging_loc_repo.get_booking_by_charging_lcaotion_id(location.charging_location_id)
             if any([booking.end_time for booking in bookings]):
-                location.is_available = False
-            else:
                 location.is_available = True
+            else:
+                location.is_available = False
 
         return locations
