@@ -14,8 +14,8 @@ class ActivityService:
     def find_activity(self, find_activity_data: FindActivityRequest):
 
        total_price = sum(self.activity_repo.calculate_total_pricing(find_activity_data))
-       number_bookings = count(self.activity_repo.calculate_number_bookings(find_activity_data))
-       number_locations = count(self.activity_repo.calculate_number_locations(find_activity_data))
+       number_bookings = len(self.activity_repo.calculate_number_bookings(find_activity_data))
+       number_locations = len(self.activity_repo.calculate_number_locations(find_activity_data))
 
        return {
             "total_price": total_price,
