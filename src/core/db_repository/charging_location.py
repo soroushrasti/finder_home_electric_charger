@@ -45,3 +45,6 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
             query = query.filter(ChargingLocation.user_id == find_charging_location_data.user_id)
 
         return query.all()
+
+    def get_booking_by_charging_location_id(self, charging_location_id: int):
+        return self.db_session.query(Booking).join(ChargingLocation).filter(Booking.charging_location_id == charging_location_id).all()

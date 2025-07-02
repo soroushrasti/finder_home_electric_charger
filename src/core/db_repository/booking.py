@@ -18,6 +18,8 @@ class BookingRepository(BookingRepositoryAbstract):
     def get_booking_by_id(self, car_id: int):
         return self.db_session.query(Booking).filter(Booking.car_id == car_id).all()
 
+    def get_booking_by_charging_location_id(self, charging_location_id: int):
+        return self.db_session.query(Booking).filter(Booking.charging_location_id == charging_location_id).all()
 
     def create_booking(self, booking_data: dict):
         new_booking = Booking(**booking_data)

@@ -16,9 +16,9 @@ class ChargingLocService:
 
     def find_charging_locs(self, charging_loc_data):
         locations : List[ChargingLocation]= self.charging_loc_repo.find_charging_loc(charging_loc_data)
-        
+
         for location in locations:
-            bookings: List[Booking] = self.charging_loc_repo.get_booking_by_charging_lcaotion_id(location.charging_location_id)
+            bookings: List[Booking] = self.charging_loc_repo.get_booking_by_charging_location_id(location.charging_location_id)
             if any([booking.end_time for booking in bookings]):
                 location.is_available = True
             else:

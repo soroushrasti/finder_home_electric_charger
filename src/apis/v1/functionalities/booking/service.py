@@ -11,6 +11,9 @@ class BookingService:
     def get_bookings(self, car_id: int):
         return self.booking_repo.get_booking_by_id(car_id)
 
+    def get_bookings_by_charging_location_id(self, charging_location_id: int):
+        return self.booking_repo.get_booking_by_charging_location_id(charging_location_id)
+
     # Add to src/apis/v1/functionalities/user/service.py
     def create_booking(self, booking_data: dict):
         return self.booking_repo.create_booking(booking_data)
@@ -20,5 +23,3 @@ class BookingService:
 
     def update_booking(self, booking_data: dict, booking_id: int):
         return self.booking_repo.update_booking(booking_id , booking_data)
-
-    

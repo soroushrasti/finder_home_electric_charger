@@ -20,7 +20,15 @@ async def get_booking_by_car_id(
         return []
     return booking
 
-
+@router.get_booking_by_charging_location_id("/bookings/{charging_location_id}")
+async def get_booking_by_charging_location_id(
+    charging_location_id: int = Path(..., title="The charging location ID"),
+    booking_svc: BookingService = Depends(get_booking_service),
+):
+    booking = booking_svc.get_bookings_by_charging_location_id(charging_location_id)
+    if not booking:
+        return []
+    return booking
 
 @router.post("/add-booking", status_code=status.HTTP_201_CREATED)
 async def create_booking(
@@ -58,5 +66,3 @@ async def update_booking(
     booking_svc: BookingService = Depends(get_booking_service)
 ):
     new_booking = booking_svc.update_booking(booking_data, booking_id)
-
-

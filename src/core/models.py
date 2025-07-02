@@ -91,9 +91,3 @@ class Pricing(Base):
     total_value = Column(Float, nullable=True)
     price_per_khw = Column(Float, nullable=True)
 
-class Activity(Base):
-    __tablename__ = 'activity'
-
-    activity_id = Column(Integer, primary_key=True, autoincrement=True)
-    car_owner_user_id = Column(Integer, nullable=True)
-    charger_location_user_id = Column(Integer, nullable=True)
