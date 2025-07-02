@@ -2,12 +2,10 @@ from itertools import count
 import select
 from requests import Session
 from fastapi import Depends
-from src.apis.v1.functionalities.activity.factory import ActivityServiceFactory
 from src.apis.v1.schemas.activity import FindActivityRequest
 from src.config.database import create_session
 from src.core.db_repository.activity import ActivityRepositoryAbstract, ActivityRepository
 from src.core.models import Booking, ChargingLocation, Pricing
-
 
 class ActivityService:
     def __init__(self, activity_repo: ActivityRepository):
@@ -24,10 +22,3 @@ class ActivityService:
             "number_bookings": number_bookings,
             "number_locations": number_locations
         }
-
-def get_activity_service(
-        db: Session = Depends(create_session)
-        ):
-    repo = ActivityRepository(db_session=db)
-    factory = ActivityServiceFactory(repo=repo)
-    return factory.get_service()

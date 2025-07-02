@@ -1,5 +1,5 @@
 from src.apis.v1.schemas.activity import FindActivityRequest
-from src.core.models import Activity, Car, ChargingLocation, Pricing, Booking, User
+from src.core.models import Car, ChargingLocation, Pricing, Booking, User
 
 
 class ActivityRepositoryAbstract:

@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Body, Depends, HTTPException
-from src.apis.v1.functionalities.activity.service import ActivityService, get_activity_service
+
+from src.apis.v1.functionalities.activity.factory import get_activity_service
+from src.apis.v1.functionalities.activity.service import ActivityService
 from src.apis.v1.schemas.activity import FindActivityRequest
 from starlette import status
 
