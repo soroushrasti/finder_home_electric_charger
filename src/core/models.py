@@ -20,9 +20,9 @@ class User(Base):
     postcode_of_home = Column(String(20), nullable=True)
     user_type = Column(String(20), nullable=False)
     mobile_number = Column(String(15), nullable=True)
-    email_varification_code = Column(Text, nullable=True)
+    email_verification_code = Column(Text, nullable=True)
     is_validated = Column(Boolean, nullable=True)
-    phone_varification_code = Column(Text, nullable=True)
+    phone_verification_code = Column(Text, nullable=True)
 
 
 class Car(Base):
