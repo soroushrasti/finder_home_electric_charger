@@ -29,3 +29,6 @@ class UserService:
         if user and check_password(password, user.password):
             return user
         return None
+
+    def validate_user(self,email_verification_code:str,  user_id: int):
+        return self.user_repo.validate_user(email_verification_code, user_id)

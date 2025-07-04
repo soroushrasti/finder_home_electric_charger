@@ -26,3 +26,6 @@ class ChargingLocService:
                 location.is_available = True
 
         return locations
+
+    def update_charging_loc(self, charging_location_data: dict, charging_location_id: int, ):
+         return self.charging_loc_repo.update_charging_loc(charging_location_id , charging_location_data)

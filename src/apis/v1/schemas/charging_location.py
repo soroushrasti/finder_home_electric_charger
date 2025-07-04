@@ -42,3 +42,16 @@ class FindChargingLocRequest(BaseModel):
         city :Optional[str] =None
         fast_charging :Optional[bool] =False
         user_id :Optional[int] =None
+
+class UpdateChargingLocRequest(BaseModel):
+    user_id: int
+    post_code: Optional[str] = None
+    city: Optional[str] = None
+    alley: Optional[str] = None
+    street: Optional[str] = None
+    home_phone_number: Optional[str] = None
+    fast_charging: Optional[bool] = False  # Fast charging option as a boolean
+    description: Optional[str] = None
+    price_per_hour: Optional[float] = None
+    power_output: Optional[float] = None  # in kW
+    name: Optional[str] = None

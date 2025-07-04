@@ -3,7 +3,7 @@ from starlette import status
 
 from src.apis.v1.functionalities.charging_location.factory import get_charging_loc_service
 from src.apis.v1.functionalities.charging_location.service import ChargingLocService
-from src.apis.v1.schemas.charging_location import CreateChargingLocRequest,ChargingLocResponse,FindChargingLocRequest
+from src.apis.v1.schemas.charging_location import CreateChargingLocRequest,ChargingLocResponse,FindChargingLocRequest, UpdateChargingLocRequest
 
 router = APIRouter()
 
@@ -28,3 +28,11 @@ async def find_charging_loc(
     charging_loc_svc: ChargingLocService = Depends(get_charging_loc_service)
 ):
     return charging_loc_svc.find_charging_locs(charging_loc_data)
+
+@router.post("/update-charging-location/{charging_location_id}")
+async def update_charging_loc(
+    charging_location_data: UpdateChargingLocRequest = Body(...),
+    charging_location_id: int = Path(..., title="The Charging Location ID"),
+    charging_location_svc: ChargingLocService = Depends(get_charging_loc_service)
+):
+    update_charging_loc = charging_location_svc.update_charging_loc(charging_location_data, charging_location_id)

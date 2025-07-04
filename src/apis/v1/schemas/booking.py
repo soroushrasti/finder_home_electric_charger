@@ -27,6 +27,8 @@ class UpdateBookingRequest(BaseModel):
     end_time: Optional[datetime] =None
     review_message: Optional[str] =None
     review_rate: Optional[int] =None
+    status: Optional[str] =None
+
 
 class AddBookingRequest(BaseModel):
     start_time: Optional[datetime] =None

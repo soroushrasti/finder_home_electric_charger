@@ -25,6 +25,7 @@ class BookingRepository(BookingRepositoryAbstract):
         new_booking = Booking(**booking_data)
         new_booking.end_time = None
         new_booking.start_time = datetime.now()
+        new_booking.status = "Success"
         self.db_session.add(new_booking)
         self.db_session.commit()
         return new_booking
@@ -44,6 +45,8 @@ class BookingRepository(BookingRepositoryAbstract):
              query.review_rate = booking_data.review_rate
             if booking_data.review_message:
              query.review_message = booking_data.review_message
+             if booking_data.status:
+              query.status = booking_data.status
             self.db_session.commit()
             return query
 
@@ -74,6 +77,8 @@ class BookingRepository(BookingRepositoryAbstract):
             query = query.filter(Booking.end_time == find_booking_data.end_time)
         if find_booking_data.review_message:
             query = query.filter(Booking.review_message == find_booking_data.review_message)
+        if find_booking_data.status:
+            query = query.filter(Booking.status == find_booking_data.status)
         if find_booking_data.charger_location_owner_user_id:
             query = query.filter(ChargingLocation.user_id == find_booking_data.charger_location_owner_user_id)
         if find_booking_data.car_owner_user_id:

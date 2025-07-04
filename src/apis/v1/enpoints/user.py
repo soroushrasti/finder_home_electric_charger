@@ -4,7 +4,7 @@ from starlette import status
 from fastapi import  HTTPException, status
 from src.apis.v1.functionalities.user.service import UserService
 from src.apis.v1.functionalities.user.factory import get_user_service, UserServiceFactory
-from src.apis.v1.schemas.user import CreateUserRequest, UserLogin
+from src.apis.v1.schemas.user import CreateUserRequest, UserLogin, ValidateUserRequest
 from src.core.utils.authentication import authenticate_user
 
 router = APIRouter()
@@ -49,3 +49,11 @@ async def login_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Error logging in: {str(e)}"
         )
+
+@router.post("/validate-user/{user_id}")
+async def validate_user(
+        user_data: ValidateUserRequest = Body(...),
+        user_id: int = Path(..., title="The User ID"),
+        user_svc: UserService = Depends(get_user_service)
+    ):
+        user = user_svc.validate_user(user_data.email_verification_code, user_id)
