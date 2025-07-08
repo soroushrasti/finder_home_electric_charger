@@ -1,3 +1,6 @@
+import smtplib
+from email.mime.text import MIMEText
+import random
 from typing import Any
 
 from sqlalchemy.testing.suite.test_reflection import users
@@ -29,9 +32,27 @@ class UserRepository(UserRepositoryAbstract):
 
     def create_user(self, user_data: dict) -> User:
         new_user = User(**user_data)
+        new_user.email_verification_code = random.randint(10000, 99999)
+        new_user.phone_verification_code = random.randint(10000, 99999)
         self.db.add(new_user)
         self.db.commit()
         self.db.refresh(new_user)
+
+        msg = MIMEText(f"Thanks for registration in finding charger location app. This is your verification code: {new_user.email_verification_code}")
+        msg["Subject"] = "email verification code"
+        msg["From"] = "<EMAIL>"
+        msg["To"] = new_user.email
+        try:
+            with smtplib.SMTP('localhost', 465) as server:
+                server.starttls()
+                server.login("<EMAIL>", "password")
+                server.sendmail("<EMAIL>", new_user.email, msg.as_string())
+
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Error sending email: {str(e)}"
+            )
         return new_user
 
     def get_user_by_email(self, email, password):
