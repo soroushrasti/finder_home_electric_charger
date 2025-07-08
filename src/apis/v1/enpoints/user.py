@@ -50,10 +50,9 @@ async def login_user(
             detail=f"Error logging in: {str(e)}"
         )
 
-@router.post("/validate-user/{user_id}")
+@router.post("/validate-user")
 async def validate_user(
         user_data: ValidateUserRequest = Body(...),
-        user_id: int = Path(..., title="The User ID"),
         user_svc: UserService = Depends(get_user_service)
     ):
-        user = user_svc.validate_user(user_data.email_verification_code, user_id)
+        user = user_svc.validate_user(user_data.email_verification_code, user_data.user_id)

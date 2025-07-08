@@ -49,7 +49,7 @@ async def create_car(
         )
 
 
-@router.post("/update_car/{car_id}")
+@router.post("/update-car/{car_id}")
 async def update_car(
     car_data: UpdateCarRequest = Body(...),
     car_id: int = Path(..., title="The Car ID"),

@@ -24,7 +24,7 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
 
     def update_charging_loc(self, charging_location_id: int, charging_location_data: dict):
         # Logic to update an existing charging location in the database
-        query = self.db_session.query(ChargingLocation).filter(
+        query: ChargingLocation = self.db_session.query(ChargingLocation).filter(
             ChargingLocation.charging_location_id == charging_location_id).first()
         if query:
             if charging_location_data.user_id:

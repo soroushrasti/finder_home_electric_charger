@@ -19,6 +19,7 @@ class FindBookingRequest(BaseModel):
     start_time: Optional[datetime] =None
     end_time: Optional[datetime] =None
     review_message: Optional[str] =None
+    status: Optional[str] =None
 
 class UpdateBookingRequest(BaseModel):
     car_id: Optional[int] =None
