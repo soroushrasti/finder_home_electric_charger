@@ -21,7 +21,8 @@ class User(Base):
     user_type = Column(String(20), nullable=False)
     mobile_number = Column(String(15), nullable=True)
     email_verification_code = Column(Text, nullable=True)
-    is_validated = Column(Boolean, nullable=True)
+    is_validated_email = Column(Boolean, nullable=True)
+    is_validated_phone_number = Column(Boolean, nullable=True)
     phone_verification_code = Column(Text, nullable=True)
 
 

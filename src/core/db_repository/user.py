@@ -1,10 +1,8 @@
-import smtplib
-from email.mime.text import MIMEText
 import random
 from typing import Any
 
+import bcrypt
 from sqlalchemy.testing.suite.test_reflection import users
-
 from src.core.models import User
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
@@ -38,32 +36,22 @@ class UserRepository(UserRepositoryAbstract):
         self.db.commit()
         self.db.refresh(new_user)
 
-        msg = MIMEText(f"Thanks for registration in finding charger location app. This is your verification code: {new_user.email_verification_code}")
-        msg["Subject"] = "email verification code"
-        msg["From"] = "<EMAIL>"
-        msg["To"] = new_user.email
-        try:
-            with smtplib.SMTP('localhost', 465) as server:
-                server.starttls()
-                server.login("<EMAIL>", "password")
-                server.sendmail("<EMAIL>", new_user.email, msg.as_string())
-
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Error sending email: {str(e)}"
-            )
         return new_user
 
     def get_user_by_email(self, email, password):
         user = self.db.query(User).filter(User.email == email).first()
         return user
 
-    def validate_user(self, email_verification_code: str, user_id: int):
+    def validate_user(self, email_verification_code: str, sms_verification_code: str, user_id: int):
         user = self.db.query(User).filter(User.user_id == user_id).first()
 
         if user.email_verification_code == email_verification_code:
-              user.is_validated = True
+              user.is_validated_email = True
+              self.db.commit()
+              self.db.refresh(user)
+              return user
+        if user.sms_verification_code == sms_verification_code:
+              user.is_validated_phone_number = True
               self.db.commit()
               self.db.refresh(user)
               return user
@@ -73,3 +61,39 @@ class UserRepository(UserRepositoryAbstract):
                    detail=f"Error validate user: {str(e)}"
                 )
 
+
+    def update_user(self, user_id: int, user_data: dict):
+        query = self.db.query(User).filter(User.user_id == user_id).first()
+        if query:
+            if user_data.username:
+                query.username = user_data.username
+            if user_data.first_name:
+                    query.first_name = user_data.first_name
+            if user_data.password:
+                    query.password = user_data.password
+            if user_data.last_name:
+                    query.last_name = user_data.last_name
+            if user_data.email:
+                    query.email = user_data.email
+            if user_data.address_of_home:
+                    query.address_of_home = user_data.address_of_home
+            if user_data.city_of_home:
+                    query.city_of_home = user_data.city_of_home
+            if user_data.postcode_of_home:
+                    query.postcode_of_home = user_data.postcode_of_home
+            if user_data.user_type:
+                    query.user_type = user_data.user_type
+            if user_data.mobile_number:
+                    query.mobile_number = user_data.mobile_number
+            if user_data.is_validated_email:
+                    query.is_validated_email = user_data.is_validated_email
+            if user_data.is_validated_phone_number:
+                    query.is_validated_phone_number = user_data.is_validated_phone_number
+
+            self.db.commit()
+            return query
+        else:
+             raise HTTPException(
+                status_code=status.HTTP_404_BAD_REQUEST,
+                detail=f"Error updating user: {str(e)}"
+             )

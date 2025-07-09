@@ -4,7 +4,7 @@ from starlette import status
 from fastapi import  HTTPException, status
 from src.apis.v1.functionalities.user.service import UserService
 from src.apis.v1.functionalities.user.factory import get_user_service, UserServiceFactory
-from src.apis.v1.schemas.user import CreateUserRequest, UserLogin, ValidateUserRequest
+from src.apis.v1.schemas.user import CreateUserRequest, UserLogin, ValidateUserRequest, UpdateUserRequest
 from src.core.utils.authentication import authenticate_user
 
 router = APIRouter()
@@ -55,4 +55,15 @@ async def validate_user(
         user_data: ValidateUserRequest = Body(...),
         user_svc: UserService = Depends(get_user_service)
     ):
-        user = user_svc.validate_user(user_data.email_verification_code, user_data.user_id)
+        user = user_svc.validate_user(user_data.email_verification_code, user_data.sms_verification_code, user_data.user_id)
+
+
+@router.post("/update-user/{user_id}")
+async def update_user(
+    user_data: UpdateUserRequest = Body(...),
+    user_id: int = Path(..., title="The User ID"),
+    user_svc: UserService = Depends(get_user_service)
+):
+    updated_user = user_svc.update_user(user_data, user_id)
+    return updated_user
+

@@ -6,6 +6,13 @@ class BaseConfig( BaseSettings):
     PORT: int = Field(default=8080)
     DEBUG: str = Field(default="True")
     TOKEN: str = Field(default="token")
+    EMAIL: str = Field(default="email")
+    PASSWORD: str = Field(default="password")
+    SMTP_SERVER: str = Field(default="localhost")
+    SMTP_PORT: str = Field(default="857")
+    ACCOUNT_SID: str = Field(default="account_sid")
+    ACCOUNT_TOKEN: str = Field(default="account_token")
+    TWILIO_NUMBER: str = Field(default="twilio_number")
 
     class Config:
         env_file = ".env.base"

@@ -25,8 +25,8 @@ class CreateUserRequest(BaseModel):
     postcode_of_home: Optional[str] = None
     user_type: UserType
     mobile_number: Optional[str]  = None
-    is_validated: Optional[bool]  = False
-
+    is_validated_email: Optional[bool]  = False
+    is_validated_phone_number: Optional[bool] = False
 
     class Config:
         allow_population_by_field_name = True
@@ -35,3 +35,18 @@ class CreateUserRequest(BaseModel):
 class ValidateUserRequest(BaseModel):
     user_id: Optional[int] = None
     email_verification_code: Optional[str] = None
+    sms_verification_code: Optional[str] = None
+
+class UpdateUserRequest(BaseModel):
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    password: str = None
+    last_name: Optional[str] = None
+    email: EmailStr
+    address_of_home: Optional[str] = None
+    city_of_home: Optional[str] = None
+    postcode_of_home: Optional[str] = None
+    user_type: UserType
+    mobile_number: Optional[str] = None
+    is_validated_email: Optional[bool] = False
+    is_validated_phone_number: Optional[bool] = False
