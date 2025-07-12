@@ -13,6 +13,7 @@ class CreateChargingLocRequest(BaseModel):
     price_per_hour: Optional[float] = None
     power_output: Optional[float] = None  # in kW
     name: Optional[str] = None
+    currency: Optional[str] = "Rials"
 
     class Config:
         allow_population_by_field_name = True
@@ -55,3 +56,4 @@ class UpdateChargingLocRequest(BaseModel):
     price_per_hour: Optional[float] = None
     power_output: Optional[float] = None  # in kW
     name: Optional[str] = None
+    currency: Optional[str] = "Rials"

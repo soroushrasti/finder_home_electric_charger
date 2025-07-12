@@ -2,8 +2,9 @@ from cmath import e
 from datetime import datetime
 from fastapi import HTTPException
 from src.apis.v1.enpoints import booking
+from src.apis.v1.enpoints.pricing import create_pricing
 from src.apis.v1.schemas.booking import FindBookingRequest
-from src.core.models import Booking, User, ChargingLocation, Car
+from src.core.models import Booking, User, ChargingLocation, Car, Pricing
 from starlette import status
 
 
@@ -32,6 +33,9 @@ class BookingRepository(BookingRepositoryAbstract):
 
     def update_booking(self, booking_id: int, booking_data: dict):
         query = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
+        if query.end_time:
+            self.db_session.pricing_calculate(query.charging_location_id, booking_data)
+
         if query:
             if booking_data.car_id :
              query.car_id = booking_data.car_id
@@ -45,8 +49,8 @@ class BookingRepository(BookingRepositoryAbstract):
              query.review_rate = booking_data.review_rate
             if booking_data.review_message:
              query.review_message = booking_data.review_message
-             if booking_data.status:
-              query.status = booking_data.status
+            if booking_data.status:
+             query.status = booking_data.status
             self.db_session.commit()
             return query
 
@@ -85,3 +89,4 @@ class BookingRepository(BookingRepositoryAbstract):
             query = query.filter(Car.user_id == find_booking_data.car_owner_user_id)
 
         return query.all()
+

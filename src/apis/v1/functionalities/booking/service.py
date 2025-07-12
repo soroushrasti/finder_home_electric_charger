@@ -1,7 +1,11 @@
+from fastapi import APIRouter
+
+from src.apis.v1.enpoints.pricing import create_pricing
 from src.apis.v1.schemas.booking import FindBookingRequest
 from src.apis.v1.schemas.booking import FindBookingRequest
 from src.core.db_repository.booking import BookingRepository
 from src.core.db_repository.booking import BookingRepositoryAbstract, BookingRepository
+from src.core.models import ChargingLocation, Pricing
 
 
 class BookingService:
@@ -23,3 +27,23 @@ class BookingService:
 
     def update_booking(self, booking_data: dict, booking_id: int):
         return self.booking_repo.update_booking(booking_id , booking_data)
+
+    def pricing_calculate (self, charging_location_id:int, booking_data: dict):
+        query = ChargingLocation.filter(ChargingLocation.charging_location_id == charging_location_id).first()
+        new_pricing = Pricing()
+
+        if query.price_per_hour:
+            price_per_hour = query.price_per_hour
+
+        new_pricing.booking_id = booking_data.booking_id
+        new_pricing.currency = query.currency
+        new_pricing.total_value = (booking_data.end_time - booking_data.start_time) * price_per_hour
+        new_pricing.price_per_kwh = None
+        create_pricing(new_pricing)
+
+        return new_pricing
+
+
+
+
+
