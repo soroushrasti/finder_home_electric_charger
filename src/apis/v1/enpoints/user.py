@@ -55,7 +55,7 @@ async def validate_user(
         user_data: ValidateUserRequest = Body(...),
         user_svc: UserService = Depends(get_user_service)
     ):
-        user = user_svc.validate_user(user_data.email_verification_code, user_data.sms_verification_code, user_data.user_id)
+        return user_svc.validate_user(user_data.email_verification_code, user_data.phone_verification_code, user_data.user_id)
 
 
 @router.post("/update-user/{user_id}")

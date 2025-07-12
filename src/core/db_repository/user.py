@@ -42,22 +42,22 @@ class UserRepository(UserRepositoryAbstract):
         user = self.db.query(User).filter(User.email == email).first()
         return user
 
-    def validate_user(self, email_verification_code: str, sms_verification_code: str, user_id: int):
+    def validate_user(self, email_verification_code: str, phone_verification_code: str, user_id: int):
         user = self.db.query(User).filter(User.user_id == user_id).first()
 
-        if user.email_verification_code == email_verification_code:
+        if email_verification_code and user.email_verification_code and user.email_verification_code == email_verification_code:
               user.is_validated_email = True
               self.db.commit()
               self.db.refresh(user)
               return user
-        if user.sms_verification_code == sms_verification_code:
+        if phone_verification_code and user.phone_verification_code and user.phone_verification_code == phone_verification_code:
               user.is_validated_phone_number = True
               self.db.commit()
               self.db.refresh(user)
               return user
         else:
                raise HTTPException(
-                   status_code=status.HTTP_404_BAD_REQUEST,
+                   status_code=status.HTTP_400_BAD_REQUEST,
                    detail=f"Error validate user: {str(e)}"
                 )
 

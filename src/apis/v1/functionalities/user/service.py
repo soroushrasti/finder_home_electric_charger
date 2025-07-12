@@ -27,7 +27,9 @@ class UserService:
     # Add to src/apis/v1/functionalities/user/service.py
     def create_user(self, user_data: dict):
         user_data['password'] = hash_password(user_data['password'])
-        return self.user_repo.create_user(user_data)
+        user= self.user_repo.create_user(user_data)
+        self.send_email(user)
+        return user
 
     def login_user(self, email, password):
         user: User = self.user_repo.get_user_by_email(email, password)
@@ -35,23 +37,23 @@ class UserService:
             return user
         return None
 
-    def validate_user(self,email_verification_code:str, sms_verification_code:str, user_id: int):
-        return self.user_repo.validate_user(email_verification_code, sms_verification_code, user_id)
+    def validate_user(self,email_verification_code:str, phone_verification_code:str, user_id: int):
+        return self.user_repo.validate_user(email_verification_code, phone_verification_code, user_id)
 
     def update_user(self,user_data:dict, user_id: int):
         return self.user_repo.update_user(user_id, user_data)
 
-    def send_email(self, user_data: dict):
+    def send_email(self, user: User):
         msg = MIMEText(
-            f"Thanks for registration in finding charger location app. This is your verification code: {user_data.email_verification_code}")
+            f"Thanks for registration in finding charger location app. This is your verification code: {user.email_verification_code}")
         msg["Subject"] = "email verification code"
         msg["From"] = settings.EMAIL
-        msg["To"] = user_data.email
+        msg["To"] = user.email
         try:
             with smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT) as server:
                 server.starttls()
                 server.login(settings.EMAIL, settings.PASSWORD)
-                server.sendmail(settings.EMAIL, user_data.email, msg.as_string())
+                server.sendmail(settings.EMAIL, user.email, msg.as_string())
 
         except Exception as e:
             raise HTTPException(
