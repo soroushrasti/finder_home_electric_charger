@@ -33,8 +33,6 @@ class BookingRepository(BookingRepositoryAbstract):
 
     def update_booking(self, booking_id: int, booking_data: dict):
         query = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
-        if query.end_time:
-            self.db_session.pricing_calculate(query.charging_location_id, booking_data)
 
         if query:
             if booking_data.car_id :
@@ -90,3 +88,16 @@ class BookingRepository(BookingRepositoryAbstract):
 
         return query.all()
 
+    def pricing_calculate (self, booking_id:int, booking_data: dict):
+        user = self.db_session.query(ChargingLocation).filter(ChargingLocation.charging_location_id == booking_data.charging_location_id).first()
+        query = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
+        new_pricing = Pricing()
+        if query.end_time:
+            price_per_hour = user.price_per_hour
+            new_pricing.booking_id = booking_id
+            new_pricing.currency = user.currency
+            new_pricing.total_value = (booking_data.end_time - booking_data.start_time) * price_per_hour
+            new_pricing.price_per_kwh = None
+            create_pricing(new_pricing)
+
+        return new_pricing

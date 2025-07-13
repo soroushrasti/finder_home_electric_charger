@@ -3,9 +3,9 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from src.apis.v1.functionalities.notification.factory import get_notification_service
 from src.apis.v1.functionalities.notification.service import NotificationService
 from src.apis.v1.schemas.notification import CreateNotificationRequest, FindNotificationRequest
+from src.core.utils.authentication import authenticate
 
-
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(authenticate)])
 
 
 @router.get("/notifications/bookings/{booking_id}")

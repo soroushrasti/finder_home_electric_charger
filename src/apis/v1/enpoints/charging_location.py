@@ -4,8 +4,9 @@ from starlette import status
 from src.apis.v1.functionalities.charging_location.factory import get_charging_loc_service
 from src.apis.v1.functionalities.charging_location.service import ChargingLocService
 from src.apis.v1.schemas.charging_location import CreateChargingLocRequest,ChargingLocResponse,FindChargingLocRequest, UpdateChargingLocRequest
+from src.core.utils.authentication import authenticate
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(authenticate)])
 
 
 @router.post("/add-charging-location", status_code=status.HTTP_201_CREATED)

@@ -26,22 +26,10 @@ class BookingService:
         return self.booking_repo.find_booking(find_booking_data)
 
     def update_booking(self, booking_data: dict, booking_id: int):
+        self.booking_repo.pricing_calculate(booking_id, booking_data)
         return self.booking_repo.update_booking(booking_id , booking_data)
 
-    def pricing_calculate (self, charging_location_id:int, booking_data: dict):
-        query = ChargingLocation.filter(ChargingLocation.charging_location_id == charging_location_id).first()
-        new_pricing = Pricing()
 
-        if query.price_per_hour:
-            price_per_hour = query.price_per_hour
-
-        new_pricing.booking_id = booking_data.booking_id
-        new_pricing.currency = query.currency
-        new_pricing.total_value = (booking_data.end_time - booking_data.start_time) * price_per_hour
-        new_pricing.price_per_kwh = None
-        create_pricing(new_pricing)
-
-        return new_pricing
 
 
 

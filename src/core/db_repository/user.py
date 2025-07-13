@@ -1,14 +1,11 @@
-import random
-from typing import Any
-
 import bcrypt
-from sqlalchemy.testing.suite.test_reflection import users
+
 from src.core.models import User
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from starlette import status
 from cmath import e
-
+import random
 
 class UserRepositoryAbstract:
     def get_user_by_id(self, user_id):
@@ -30,8 +27,9 @@ class UserRepository(UserRepositoryAbstract):
 
     def create_user(self, user_data: dict) -> User:
         new_user = User(**user_data)
-        new_user.email_verification_code = random.randint(10000, 99999)
-        new_user.phone_verification_code = random.randint(10000, 99999)
+        new_user.email_verification_code = self.hash_code(random.randint(10000, 99999))
+        new_user.phone_verification_code = self.hash_code(random.randint(10000, 99999))
+
         self.db.add(new_user)
         self.db.commit()
         self.db.refresh(new_user)
@@ -44,13 +42,15 @@ class UserRepository(UserRepositoryAbstract):
 
     def validate_user(self, email_verification_code: str, phone_verification_code: str, user_id: int):
         user = self.db.query(User).filter(User.user_id == user_id).first()
+        email_is_correct = bcrypt.checkpw(email_verification_code.encode('utf-8'), user.email_verification_code.encode('utf-8'))
+        phone_is_correct = bcrypt.checkpw(phone_verification_code.encode('utf-8'), user.phone_verification_code.encode('utf-8'))
 
-        if email_verification_code and user.email_verification_code and user.email_verification_code == email_verification_code:
+        if email_verification_code and user.email_verification_code and email_is_correct:
               user.is_validated_email = True
               self.db.commit()
               self.db.refresh(user)
               return user
-        if phone_verification_code and user.phone_verification_code and user.phone_verification_code == phone_verification_code:
+        if phone_verification_code and user.phone_verification_code and phone_is_correct:
               user.is_validated_phone_number = True
               self.db.commit()
               self.db.refresh(user)
@@ -97,3 +97,8 @@ class UserRepository(UserRepositoryAbstract):
                 status_code=status.HTTP_404_BAD_REQUEST,
                 detail=f"Error updating user: {str(e)}"
              )
+
+    def hash_code(self, plain_code: int) -> str:
+            salt = bcrypt.gensalt()
+            hashed = bcrypt.hashpw(str(plain_code).encode('utf-8'), salt)
+            return hashed.decode('utf-8')

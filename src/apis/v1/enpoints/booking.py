@@ -6,8 +6,9 @@ from src.apis.v1.schemas.booking import AddBookingRequest, CreateBookingRequest,
 from src.core.models import Booking
 from starlette import status
 from src.apis.v1.schemas.car import FindCarRequest
+from src.core.utils.authentication import authenticate
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(authenticate)])
 
 
 @router.get("/bookings/{car_id}")

@@ -5,9 +5,9 @@ from fastapi import  HTTPException, status
 from src.apis.v1.functionalities.user.service import UserService
 from src.apis.v1.functionalities.user.factory import get_user_service, UserServiceFactory
 from src.apis.v1.schemas.user import CreateUserRequest, UserLogin, ValidateUserRequest, UpdateUserRequest
-from src.core.utils.authentication import authenticate_user
+from src.core.utils.authentication import authenticate
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(authenticate)])
 
 
 @router.get("/users/{user_id}")

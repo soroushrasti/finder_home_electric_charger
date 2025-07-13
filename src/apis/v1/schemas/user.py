@@ -28,6 +28,8 @@ class CreateUserRequest(BaseModel):
     is_validated_email: Optional[bool]  = False
     is_validated_phone_number: Optional[bool] = False
 
+
+
     class Config:
         allow_population_by_field_name = True
         allow_population_by_alias = True
