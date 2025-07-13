@@ -57,8 +57,8 @@ class UserRepository(UserRepositoryAbstract):
               return user
         else:
                raise HTTPException(
-                   status_code=status.HTTP_400_BAD_REQUEST,
-                   detail=f"Error validate user: {str(e)}"
+                   status_code=status.HTTP_401_UNAUTHORIZED,
+                   detail=f"cannot caluted user: {str(e)}"
                 )
 
 

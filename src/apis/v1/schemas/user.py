@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, validator
 from enum import Enum
 from typing import Optional
 
@@ -15,18 +15,22 @@ class UserLogin(BaseModel):
         allow_population_by_alias = True
 
 class CreateUserRequest(BaseModel):
-    username: Optional[str] = None
     first_name: Optional[str] = None
     password: str = None
     last_name: Optional[str] = None
     email: EmailStr
+    username: Optional[str] = None
     address_of_home: Optional[str] = None
     city_of_home: Optional[str] = None
     postcode_of_home: Optional[str] = None
     user_type: UserType
     mobile_number: Optional[str]  = None
-    is_validated_email: Optional[bool]  = False
-    is_validated_phone_number: Optional[bool] = False
+
+    @validator('username', pre=True, always=True)
+    def set_username_from_email(cls, username, values):
+        if not username and 'email' in values:
+            return values['email']
+        return username
 
     class Config:
         allow_population_by_field_name = True
