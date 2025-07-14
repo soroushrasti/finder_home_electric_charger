@@ -1,8 +1,9 @@
-import bcrypt
+from datetime import datetime, timedelta
+from email.mime.text import MIMEText
 
 from src.core.models import User
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 from starlette import status
 from cmath import e
 import random
@@ -27,8 +28,9 @@ class UserRepository(UserRepositoryAbstract):
 
     def create_user(self, user_data: dict) -> User:
         new_user = User(**user_data)
-        new_user.email_verification_code = self.hash_code(random.randint(10000, 99999))
-        new_user.phone_verification_code = self.hash_code(random.randint(10000, 99999))
+        new_user.email_verification_code = random.randint(10000, 99999)
+        new_user.phone_verification_code = random.randint(10000, 99999)
+        new_user.expired_time_email_verification = datetime.now() + timedelta(minutes=15)
 
         self.db.add(new_user)
         self.db.commit()
@@ -42,15 +44,13 @@ class UserRepository(UserRepositoryAbstract):
 
     def validate_user(self, email_verification_code: str, phone_verification_code: str, user_id: int):
         user = self.db.query(User).filter(User.user_id == user_id).first()
-        email_is_correct = bcrypt.checkpw(email_verification_code.encode('utf-8'), user.email_verification_code.encode('utf-8'))
-        phone_is_correct = bcrypt.checkpw(phone_verification_code.encode('utf-8'), user.phone_verification_code.encode('utf-8'))
 
-        if email_verification_code and user.email_verification_code and email_is_correct:
+        if email_verification_code and user.email_verification_code and user.email_verification_code == email_verification_code and (user.expired_time_email_verification >= datetime.now()):
               user.is_validated_email = True
               self.db.commit()
               self.db.refresh(user)
               return user
-        if phone_verification_code and user.phone_verification_code and phone_is_correct:
+        if phone_verification_code and user.phone_verification_code and user.phone_verification_code == phone_verification_code and (user.expired_time_phone_verification >= datetime.now()):
               user.is_validated_phone_number = True
               self.db.commit()
               self.db.refresh(user)
@@ -61,6 +61,19 @@ class UserRepository(UserRepositoryAbstract):
                    detail=f"cannot caluted user: {str(e)}"
                 )
 
+    def forgot_password(self, email_address:str):
+        user = self.db.query(User).filter(User.email == email_address).first()
+        user.email_verification_code = random.randint(10000, 99999)
+        user.is_validated_email = False
+        self.db.add(user)
+        self.db.commit()
+        self.db.refresh(user)
+
+        msg = MIMEText(
+            f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
+        self.send_email(user, msg)
+
+        return user
 
     def update_user(self, user_id: int, user_data: dict):
         query = self.db.query(User).filter(User.user_id == user_id).first()
@@ -98,7 +111,3 @@ class UserRepository(UserRepositoryAbstract):
                 detail=f"Error updating user: {str(e)}"
              )
 
-    def hash_code(self, plain_code: int) -> str:
-            salt = bcrypt.gensalt()
-            hashed = bcrypt.hashpw(str(plain_code).encode('utf-8'), salt)
-            return hashed.decode('utf-8')

@@ -4,7 +4,8 @@ from starlette import status
 from fastapi import  HTTPException, status
 from src.apis.v1.functionalities.user.service import UserService
 from src.apis.v1.functionalities.user.factory import get_user_service, UserServiceFactory
-from src.apis.v1.schemas.user import CreateUserRequest, UserLogin, ValidateUserRequest, UpdateUserRequest
+from src.apis.v1.schemas.user import CreateUserRequest, UserLogin, ValidateUserRequest, UpdateUserRequest, \
+    ResendVerificationRequest
 from src.core.utils.authentication import authenticate
 
 router = APIRouter(dependencies=[Depends(authenticate)])
@@ -67,3 +68,9 @@ async def update_user(
     updated_user = user_svc.update_user(user_data, user_id)
     return updated_user
 
+@router.post("/resend-verification")
+async def resend_verification(
+        user_data: ResendVerificationRequest = Body(...),
+        user_svc: UserService = Depends(get_user_service)
+    ):
+        return user_svc.resend_verification(user_data.user_id)
