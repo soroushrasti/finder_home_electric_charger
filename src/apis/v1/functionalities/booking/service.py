@@ -1,7 +1,11 @@
+from fastapi import APIRouter
+
+from src.apis.v1.enpoints.pricing import create_pricing
 from src.apis.v1.schemas.booking import FindBookingRequest
 from src.apis.v1.schemas.booking import FindBookingRequest
 from src.core.db_repository.booking import BookingRepository
 from src.core.db_repository.booking import BookingRepositoryAbstract, BookingRepository
+from src.core.models import ChargingLocation, Pricing
 
 
 class BookingService:
@@ -22,4 +26,12 @@ class BookingService:
         return self.booking_repo.find_booking(find_booking_data)
 
     def update_booking(self, booking_data: dict, booking_id: int):
+        self.booking_repo.pricing_calculate(booking_id, booking_data)
         return self.booking_repo.update_booking(booking_id , booking_data)
+
+
+
+
+
+
+

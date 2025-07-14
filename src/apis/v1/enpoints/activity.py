@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Body, Depends, HTTPException
-
 from src.apis.v1.functionalities.activity.factory import get_activity_service
 from src.apis.v1.functionalities.activity.service import ActivityService
 from src.apis.v1.schemas.activity import FindActivityRequest
 from starlette import status
+from src.core.utils.authentication import authenticate
 
-
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(authenticate)])
 
 
 @router.post("/find-activity", status_code=status.HTTP_200_OK)

@@ -32,6 +32,8 @@ class CreateUserRequest(BaseModel):
             return values['email']
         return username
 
+
+
     class Config:
         allow_population_by_field_name = True
         allow_population_by_alias = True

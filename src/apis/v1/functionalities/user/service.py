@@ -1,7 +1,11 @@
+import random
 import smtplib
 from email.mime.text import MIMEText
+from pyexpat.errors import messages
+
 from fastapi import HTTPException
 from httpx import Client
+from sqlalchemy import false
 from starlette import status
 from src.core.db_repository.user import UserRepositoryAbstract, UserRepository
 import bcrypt
@@ -17,6 +21,21 @@ def hash_password(plain_password: str) -> str:
 def check_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
+def forgot_password(self, email_address: str) -> str:
+    user = self.db.query(User).filter(User.email == email_address).first()
+    user.email_verification_code = hash_password(str(random.randint(10000, 99999)))
+    user.is_validated_email = false()
+    self.db.add(user)
+    self.db.commit()
+    self.db.refresh(user)
+
+    msg = MIMEText(
+        f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
+    self.send_email(user, msg)
+
+    return user
+
+
 class UserService:
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
@@ -28,7 +47,9 @@ class UserService:
     def create_user(self, user_data: dict):
         user_data['password'] = hash_password(user_data['password'])
         user= self.user_repo.create_user(user_data)
-        self.send_email(user)
+        msg = MIMEText(
+            f"Thanks for registration in finding charger location app. This is your verification code: {user.email_verification_code}")
+        self.send_email(user, msg)
         return user
 
     def login_user(self, email, password):
@@ -43,9 +64,8 @@ class UserService:
     def update_user(self,user_data:dict, user_id: int):
         return self.user_repo.update_user(user_id, user_data)
 
-    def send_email(self, user: User):
-        msg = MIMEText(
-            f"Thanks for registration in finding charger location app. This is your verification code: {user.email_verification_code}")
+    def send_email(self, user: User, message:str):
+        msg = message
         msg["Subject"] = "email verification code"
         msg["From"] = settings.EMAIL
         msg["To"] = user.email

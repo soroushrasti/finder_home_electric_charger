@@ -52,6 +52,7 @@ class ChargingLocation(Base):
     price_per_hour = Column(Float, nullable=True)  # Price per hour for charging
     power_output = Column(Float, nullable=True)
     description = Column(Text, nullable=True)  # Description of the charging location
+    currency = Column(Text, nullable=True)
 
 
 class Booking(Base):
@@ -94,5 +95,5 @@ class Pricing(Base):
     booking_id = Column(Integer, ForeignKey('booking.booking_id'), nullable=False)
     currency = Column(Text, nullable=True)
     total_value = Column(Float, nullable=True)
-    price_per_khw = Column(Float, nullable=True)
+    price_per_kwh = Column(Float, nullable=True)
 

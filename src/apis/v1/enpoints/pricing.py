@@ -4,9 +4,9 @@ from src.apis.v1.schemas.pricing import CreatePricingRequest, FindPricingRequest
 from starlette import status
 from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from src.apis.v1.functionalities.pricing.factory import get_pricing_service
+from src.core.utils.authentication import authenticate
 
-
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(authenticate)])
 
 
 @router.post("/add-pricing", status_code=status.HTTP_201_CREATED)

@@ -4,8 +4,9 @@ from starlette import status
 from src.apis.v1.functionalities.car.factory import get_car_service
 from src.apis.v1.functionalities.car.service import CarService
 from src.apis.v1.schemas.car import CreateCarRequest, FindCarRequest, UpdateCarRequest
+from src.core.utils.authentication import authenticate
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(authenticate)])
 
 
 @router.get("/cars/{user_id}")
