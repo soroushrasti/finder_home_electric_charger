@@ -1,9 +1,12 @@
 from cmath import e
 from datetime import datetime
-from fastapi import HTTPException
+from fastapi import HTTPException, Body, Depends
 from src.apis.v1.enpoints import booking
 from src.apis.v1.enpoints.pricing import create_pricing
+from src.apis.v1.functionalities.pricing.factory import get_pricing_service
+from src.apis.v1.functionalities.pricing.service import PricingService
 from src.apis.v1.schemas.booking import FindBookingRequest
+from src.apis.v1.schemas.pricing import CreatePricingRequest
 from src.core.models import Booking, User, ChargingLocation, Car, Pricing
 from starlette import status
 
@@ -33,6 +36,8 @@ class BookingRepository(BookingRepositoryAbstract):
 
     def update_booking(self, booking_id: int, booking_data: dict):
         query = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
+
+        self.pricing_calculate(booking_id)
 
         if query:
             if booking_data.car_id :
@@ -88,16 +93,18 @@ class BookingRepository(BookingRepositoryAbstract):
 
         return query.all()
 
-    def pricing_calculate (self, booking_id:int, booking_data: dict):
-        user = self.db_session.query(ChargingLocation).filter(ChargingLocation.charging_location_id == booking_data.charging_location_id).first()
+    def pricing_calculate (self, booking_id:int):
         query = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
-        new_pricing = Pricing()
+        user = self.db_session.query(ChargingLocation).filter(ChargingLocation.charging_location_id == query.charging_location_id).first()
+
+        new_pricing : dict
+
         if query.end_time:
             price_per_hour = user.price_per_hour
             new_pricing.booking_id = booking_id
             new_pricing.currency = user.currency
-            new_pricing.total_value = (booking_data.end_time - booking_data.start_time) * price_per_hour
+            new_pricing.total_value = (query.end_time - query.start_time) * price_per_hour
             new_pricing.price_per_kwh = None
+
             create_pricing(new_pricing)
 
-        return new_pricing

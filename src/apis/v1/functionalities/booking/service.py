@@ -26,7 +26,6 @@ class BookingService:
         return self.booking_repo.find_booking(find_booking_data)
 
     def update_booking(self, booking_data: dict, booking_id: int):
-        self.booking_repo.pricing_calculate(booking_id, booking_data)
         return self.booking_repo.update_booking(booking_id , booking_data)
 
 

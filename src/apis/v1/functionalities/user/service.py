@@ -1,5 +1,6 @@
 import random
 import smtplib
+from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from pyexpat.errors import messages
 
@@ -20,20 +21,6 @@ def hash_password(plain_password: str) -> str:
 
 def check_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
-
-def forgot_password(self, email_address: str) -> str:
-    user = self.db.query(User).filter(User.email == email_address).first()
-    user.email_verification_code = hash_password(str(random.randint(10000, 99999)))
-    user.is_validated_email = false()
-    self.db.add(user)
-    self.db.commit()
-    self.db.refresh(user)
-
-    msg = MIMEText(
-        f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
-    self.send_email(user, msg)
-
-    return user
 
 
 class UserService:
@@ -60,6 +47,23 @@ class UserService:
 
     def validate_user(self,email_verification_code:str, phone_verification_code:str, user_id: int):
         return self.user_repo.validate_user(email_verification_code, phone_verification_code, user_id)
+
+    def resend_verification(self,user_id: int):
+        user = self.user_repo.get_user_by_id(user_id)
+
+        if user.expired_time_email_verification < datetime.now():
+            user.email_verification_code = random.randint(10000, 99999)
+            user.expired_time_email_verification = datetime.now() + timedelta(minutes=15)
+            self.user_repo.update_user(user_id, user)
+
+            msg = MIMEText(
+                f"Thanks for registration in finding charger location app. This is your verification code: {user.email_verification_code}")
+            self.send_email(user, msg)
+        return user
+
+    def forgot_password(self, email_address: str) -> str:
+        return self.user_repo.forgot_password(email_address)
+
 
     def update_user(self,user_data:dict, user_id: int):
         return self.user_repo.update_user(user_id, user_data)

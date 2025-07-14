@@ -39,6 +39,11 @@ class ValidateUserRequest(BaseModel):
     email_verification_code: Optional[str] = None
     phone_verification_code: Optional[str] = None
 
+class ResendVerificationRequest(BaseModel):
+    user_id: Optional[int] = None
+    email_verification_code: Optional[str] = None
+    phone_verification_code: Optional[str] = None
+
 class UpdateUserRequest(BaseModel):
     username: Optional[str] = None
     first_name: Optional[str] = None

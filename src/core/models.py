@@ -1,4 +1,3 @@
-
 from sqlalchemy import Column, Integer,Float, String, Enum, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum as PyEnum
@@ -24,6 +23,8 @@ class User(Base):
     is_validated_email = Column(Boolean, nullable=True)
     is_validated_phone_number = Column(Boolean, nullable=True)
     phone_verification_code = Column(Text, nullable=True)
+    expired_time_email_verification = Column(DateTime, nullable=True)
+    expired_time_phone_verification = Column(DateTime, nullable=True)
 
 
 class Car(Base):
