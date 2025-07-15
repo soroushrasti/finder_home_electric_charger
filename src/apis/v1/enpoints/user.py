@@ -5,7 +5,7 @@ from fastapi import  HTTPException, status
 from src.apis.v1.functionalities.user.service import UserService
 from src.apis.v1.functionalities.user.factory import get_user_service, UserServiceFactory
 from src.apis.v1.schemas.user import CreateUserRequest, UserLogin, ValidateUserRequest, UpdateUserRequest, \
-    ResendVerificationRequest
+    ResendVerificationRequest, ForgotPasswordRequest
 from src.core.utils.authentication import authenticate
 
 router = APIRouter(dependencies=[Depends(authenticate)])
@@ -74,3 +74,10 @@ async def resend_verification(
         user_svc: UserService = Depends(get_user_service)
     ):
         return user_svc.resend_verification(user_data.user_id)
+
+@router.post("/forgot-password")
+async def forgot_password(
+        user_data: ForgotPasswordRequest = Body(...),
+        user_svc: UserService = Depends(get_user_service)
+    ):
+        return user_svc.forgot_password(user_data.email)

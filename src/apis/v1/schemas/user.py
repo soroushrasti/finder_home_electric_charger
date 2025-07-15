@@ -48,6 +48,10 @@ class ResendVerificationRequest(BaseModel):
     email_verification_code: Optional[str] = None
     phone_verification_code: Optional[str] = None
 
+class ForgotPasswordRequest(BaseModel):
+     email: Optional[str] = None
+     mobile_number: Optional[str] = None
+
 class UpdateUserRequest(BaseModel):
     username: Optional[str] = None
     first_name: Optional[str] = None

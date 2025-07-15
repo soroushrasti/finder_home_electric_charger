@@ -64,7 +64,6 @@ class UserService:
     def forgot_password(self, email_address: str) -> str:
         return self.user_repo.forgot_password(email_address)
 
-
     def update_user(self,user_data:dict, user_id: int):
         return self.user_repo.update_user(user_id, user_data)
 

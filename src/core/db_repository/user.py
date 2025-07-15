@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
-
 from src.core.models import User
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, Depends
@@ -58,22 +57,28 @@ class UserRepository(UserRepositoryAbstract):
         else:
                raise HTTPException(
                    status_code=status.HTTP_401_UNAUTHORIZED,
-                   detail=f"cannot caluted user: {str(e)}"
+                   detail=f"cannot validated user: {str(e)}"
                 )
 
     def forgot_password(self, email_address:str):
-        user = self.db.query(User).filter(User.email == email_address).first()
-        user.email_verification_code = random.randint(10000, 99999)
-        user.is_validated_email = False
-        self.db.add(user)
-        self.db.commit()
-        self.db.refresh(user)
+        if email_address:
+            user = self.db.query(User).filter(User.email == email_address).first()
+            user.email_verification_code = random.randint(10000, 99999)
+            user.is_validated_email = False
+            self.db.add(user)
+            self.db.commit()
+            self.db.refresh(user)
 
-        msg = MIMEText(
-            f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
-        self.send_email(user, msg)
-
-        return user
+            msg = MIMEText(
+                   f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
+            self.send_email(user, msg)
+            return user
+        else:
+               raise HTTPException(
+                   status_code=status.HTTP_401_UNAUTHORIZED,
+                   detail=f"cannot send email: {str(e)}"
+                )
+        return None
 
     def update_user(self, user_id: int, user_data: dict):
         query = self.db.query(User).filter(User.user_id == user_id).first()

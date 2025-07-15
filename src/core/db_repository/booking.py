@@ -8,6 +8,7 @@ from src.apis.v1.functionalities.pricing.factory import get_pricing_service
 from src.apis.v1.functionalities.pricing.service import PricingService
 from src.apis.v1.schemas.booking import FindBookingRequest
 from src.apis.v1.schemas.pricing import CreatePricingRequest
+from src.core.db_repository.pricing import PricingRepository, PricingRepositoryAbstract
 from src.core.models import Booking, User, ChargingLocation, Car, Pricing
 from starlette import status
 
@@ -35,7 +36,7 @@ class BookingRepository(BookingRepositoryAbstract):
         self.db_session.commit()
         return new_booking
 
-    def update_booking(self, booking_id: int, booking_data: dict):
+    def update_booking(self, booking_id: int, booking_data: UpdateBookingRequest):
         booking: Booking = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
 
         if booking:
@@ -102,7 +103,9 @@ class BookingRepository(BookingRepositoryAbstract):
             new_pricing.currency = charging_location.currency
             new_pricing.total_value = (booking_data.end_time - booking_data.start_time) * price_per_hour
             new_pricing.price_per_kwh = None
+
             self.db_session.add(new_pricing)
             self.db_session.commit()
             return new_pricing
+
         return None
