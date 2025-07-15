@@ -62,7 +62,12 @@ class UserService:
         return user
 
     def forgot_password(self, email_address: str) -> str:
-        return self.user_repo.forgot_password(email_address)
+        user= self.user_repo.forgot_password(email_address)
+        if user:
+            msg = MIMEText(
+                f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
+            self.send_email(user, msg)
+        return user
 
     def update_user(self,user_data:dict, user_id: int):
         return self.user_repo.update_user(user_id, user_data)

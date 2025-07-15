@@ -63,22 +63,17 @@ class UserRepository(UserRepositoryAbstract):
     def forgot_password(self, email_address:str):
         if email_address:
             user = self.db.query(User).filter(User.email == email_address).first()
-            user.email_verification_code = random.randint(10000, 99999)
-            user.is_validated_email = False
-            self.db.add(user)
-            self.db.commit()
-            self.db.refresh(user)
-
-            msg = MIMEText(
-                   f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
-            self.send_email(user, msg)
-            return user
+            if user:
+                user.email_verification_code = random.randint(10000, 99999)
+                user.is_validated_email = False
+                self.db.add(user)
+                self.db.commit()
+                self.db.refresh(user)
+                return user
+            else:
+                return None
         else:
-               raise HTTPException(
-                   status_code=status.HTTP_401_UNAUTHORIZED,
-                   detail=f"cannot send email: {str(e)}"
-                )
-        return None
+            return None
 
     def update_user(self, user_id: int, user_data: dict):
         query = self.db.query(User).filter(User.user_id == user_id).first()
