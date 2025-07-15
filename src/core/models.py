@@ -17,7 +17,7 @@ class User(Base):
     address_of_home = Column(Text, nullable=True)
     city_of_home = Column(String(100), nullable=True)
     postcode_of_home = Column(String(20), nullable=True)
-    user_type = Column(String(20), nullable=False)
+    user_type = Column(String(20), nullable=True)
     mobile_number = Column(String(15), nullable=True)
     email_verification_code = Column(Text, nullable=True)
     is_validated_email = Column(Boolean, nullable=True)

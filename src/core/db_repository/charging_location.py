@@ -81,8 +81,6 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
             query = query.filter(ChargingLocation.fast_charging == find_charging_location_data.fast_charging)
         if find_charging_location_data.user_id:
             query = query.filter(ChargingLocation.user_id == find_charging_location_data.user_id)
-        if find_charging_location_data.currency:
-            query = query.filter(ChargingLocation.currency == find_charging_location_data.currency)
 
         return query.all()
 

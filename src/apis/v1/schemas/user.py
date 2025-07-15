@@ -23,7 +23,7 @@ class CreateUserRequest(BaseModel):
     address_of_home: Optional[str] = None
     city_of_home: Optional[str] = None
     postcode_of_home: Optional[str] = None
-    user_type: UserType
+    user_type: Optional[UserType] = None
     mobile_number: Optional[str]  = None
 
     @validator('username', pre=True, always=True)
