@@ -40,7 +40,7 @@ class UserService:
         return user
 
     def login_user(self, email, password):
-        user: User = self.user_repo.get_user_by_email(email, password)
+        user: User = self.user_repo.get_user_by_email(email)
         if user and check_password(password, user.password):
             return user
         return None
@@ -69,7 +69,7 @@ class UserService:
             self.send_email(user, msg)
         return user
 
-    def update_user(self,user_data:dict, user_id: int):
+    def update_user(self,user_data, user_id: int):
         return self.user_repo.update_user(user_id, user_data)
 
     def send_email(self, user: User, message:str):

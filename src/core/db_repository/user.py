@@ -37,7 +37,7 @@ class UserRepository(UserRepositoryAbstract):
 
         return new_user
 
-    def get_user_by_email(self, email, password):
+    def get_user_by_email(self, email):
         user = self.db.query(User).filter(User.email == email).first()
         return user
 
@@ -75,7 +75,7 @@ class UserRepository(UserRepositoryAbstract):
         else:
             return None
 
-    def update_user(self, user_id: int, user_data: dict):
+    def update_user(self, user_id: int, user_data):
         query = self.db.query(User).filter(User.user_id == user_id).first()
         if query:
             if user_data.username:

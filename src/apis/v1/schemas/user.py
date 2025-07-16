@@ -55,13 +55,13 @@ class ForgotPasswordRequest(BaseModel):
 class UpdateUserRequest(BaseModel):
     username: Optional[str] = None
     first_name: Optional[str] = None
-    password: str = None
+    password: Optional[str] = None
     last_name: Optional[str] = None
-    email: EmailStr
+    email: Optional[str] = None
     address_of_home: Optional[str] = None
     city_of_home: Optional[str] = None
     postcode_of_home: Optional[str] = None
-    user_type: UserType
+    user_type: Optional[str] = None
     mobile_number: Optional[str] = None
     is_validated_email: Optional[bool] = False
     is_validated_phone_number: Optional[bool] = False
