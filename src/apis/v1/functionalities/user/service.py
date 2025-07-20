@@ -8,6 +8,8 @@ from fastapi import HTTPException
 from httpx import Client
 from sqlalchemy import false
 from starlette import status
+
+from src.apis.v1.schemas.user import UpdateUserRequest
 from src.core.db_repository.user import UserRepositoryAbstract, UserRepository
 import bcrypt
 from src.config.base import BaseConfig, settings
@@ -49,27 +51,28 @@ class UserService:
         return self.user_repo.validate_user(email_verification_code, phone_verification_code, user_id)
 
     def resend_verification(self,user_id: int):
-        user = self.user_repo.get_user_by_id(user_id)
-
-        if user.expired_time_email_verification < datetime.now():
-            user.email_verification_code = random.randint(10000, 99999)
-            user.expired_time_email_verification = datetime.now() + timedelta(minutes=15)
-            self.user_repo.update_user(user_id, user)
-
+        user: User = self.user_repo.get_user_by_id(user_id)
+        user= self.user_repo.reset_password(user.email)
+        if user:
             msg = MIMEText(
                 f"Thanks for registration in finding charger location app. This is your verification code: {user.email_verification_code}")
             self.send_email(user, msg)
         return user
 
     def forgot_password(self, email_address: str) -> str:
-        user= self.user_repo.forgot_password(email_address)
+        user= self.user_repo.reset_password(email_address)
         if user:
             msg = MIMEText(
                 f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
             self.send_email(user, msg)
         return user
 
-    def update_user(self,user_data, user_id: int):
+    def update_user(self,user_data: UpdateUserRequest, user_id: int):
+        ## hash the password if it is provided
+        if user_data.password:
+            user_data.password = hash_password(user_data.password)
+        else:
+            user_data.password = None
         return self.user_repo.update_user(user_id, user_data)
 
     def send_email(self, user: User, message:str):

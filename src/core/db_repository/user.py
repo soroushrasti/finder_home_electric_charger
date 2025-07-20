@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
+
+from src.apis.v1.schemas.user import UpdateUserRequest
 from src.core.models import User
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, Depends
@@ -60,13 +62,13 @@ class UserRepository(UserRepositoryAbstract):
                    detail=f"cannot validated user: {str(e)}"
                 )
 
-    def forgot_password(self, email_address:str):
+    def reset_password(self, email_address:str):
         if email_address:
             user = self.db.query(User).filter(User.email == email_address).first()
             if user:
                 user.email_verification_code = random.randint(10000, 99999)
                 user.is_validated_email = False
-                self.db.add(user)
+                user.expired_time_email_verification = datetime.now() + timedelta(minutes=15)
                 self.db.commit()
                 self.db.refresh(user)
                 return user
@@ -75,7 +77,7 @@ class UserRepository(UserRepositoryAbstract):
         else:
             return None
 
-    def update_user(self, user_id: int, user_data):
+    def update_user(self, user_id: int, user_data: UpdateUserRequest):
         query = self.db.query(User).filter(User.user_id == user_id).first()
         if query:
             if user_data.username:

@@ -59,7 +59,7 @@ async def validate_user(
         return user_svc.validate_user(user_data.email_verification_code, user_data.phone_verification_code, user_data.user_id)
 
 
-@router.post("/update-user/{user_id}")
+@router.put("/update-user/{user_id}")
 async def update_user(
     user_data: UpdateUserRequest = Body(...),
     user_id: int = Path(..., title="The User ID"),
@@ -75,7 +75,7 @@ async def resend_verification(
     ):
         return user_svc.resend_verification(user_data.user_id)
 
-@router.post("/forgot-password")
+@router.post("/user-forgot-password")
 async def forgot_password(
         user_data: ForgotPasswordRequest = Body(...),
         user_svc: UserService = Depends(get_user_service)
