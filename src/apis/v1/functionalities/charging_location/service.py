@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from src.apis.v1.schemas.charging_location import FindNearbyChargingLocRequest
 from src.core.db_repository.charging_location import ChargingLocRepositoryAbstract, ChargingLocRepository
 from src.core.models import Booking, ChargingLocation
 
@@ -30,6 +31,7 @@ class ChargingLocService:
     def update_charging_loc(self, charging_location_data: dict, charging_location_id: int, ):
          return self.charging_loc_repo.update_charging_loc(charging_location_id , charging_location_data)
 
-    def find_nearby_charging_locs(self, charging_loc_data):
+    def find_nearby_charging_locs(self, charging_loc_data: FindNearbyChargingLocRequest):
         locations : List[ChargingLocation]= self.charging_loc_repo.find_nearby_charging_loc(charging_loc_data)
+        return locations
 

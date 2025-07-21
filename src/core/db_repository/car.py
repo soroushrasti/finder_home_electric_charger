@@ -13,7 +13,7 @@ class CarRepository(CarRepositoryAbstract):
     def __init__(self, db_session):
         self.db_session = db_session
 
-    def get_car_by_id(self, user_id: int):
+    def get_cars_by_id(self, user_id: int):
         return self.db_session.query(Car).filter(Car.user_id == user_id).all()
 
     def create_car(self, car_data: dict):

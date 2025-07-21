@@ -58,25 +58,25 @@ class TestCarRepository(unittest.TestCase):
     def test_get_car_by_id(self):
             # Setup
             user_id = "2"
-            self.db_session.query.return_value.filter.return_value.first.return_value = self.sample_car
+            self.db_session.query.return_value.filter.return_value.all.return_value = [self.sample_car]
 
             # Execute
-            result = self.car_repo.get_car_by_id(user_id)
+            result = self.car_repo.get_cars_by_id(user_id)
 
             # Assert
-            self.assertEqual(result, self.sample_car)
+            self.assertEqual(result,[ self.sample_car])
             self.db_session.query.assert_called_once()
 
     def test_get_car_by_id_not_found(self):
         # Setup
         user_id = "nonexistent_user"
-        self.db_session.query.return_value.filter.return_value.first.return_value = None
+        self.db_session.query.return_value.filter.return_value.all.return_value = []
 
         # Execute
-        result = self.car_repo.get_car_by_id(user_id)
+        result = self.car_repo.get_cars_by_id(user_id)
 
         # Assert
-        self.assertIsNone(result)
+        self.assertEqual(result, [])
 
     # def test_find_car(self):
     #     self.db_session.query.return_value.filter.return_value.first.return_value = self.sample_car

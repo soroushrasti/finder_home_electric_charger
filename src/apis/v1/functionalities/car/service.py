@@ -7,7 +7,7 @@ class CarService:
         self.car_repo = car_repo
 
     def get_cars(self, user_id: int):
-        return self.car_repo.get_car_by_id(user_id)
+        return self.car_repo.get_cars_by_id(user_id)
 
     # Add to src/apis/v1/functionalities/user/service.py
     def create_car(self, car_data: dict):
