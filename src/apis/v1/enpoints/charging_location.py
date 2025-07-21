@@ -3,7 +3,8 @@ from starlette import status
 
 from src.apis.v1.functionalities.charging_location.factory import get_charging_loc_service
 from src.apis.v1.functionalities.charging_location.service import ChargingLocService
-from src.apis.v1.schemas.charging_location import CreateChargingLocRequest,ChargingLocResponse,FindChargingLocRequest, UpdateChargingLocRequest
+from src.apis.v1.schemas.charging_location import CreateChargingLocRequest, ChargingLocResponse, FindChargingLocRequest, \
+    UpdateChargingLocRequest, FindNearbyChargingLocRequest
 from src.core.utils.authentication import authenticate
 
 router = APIRouter(dependencies=[Depends(authenticate)])
@@ -37,3 +38,10 @@ async def update_charging_loc(
     charging_location_svc: ChargingLocService = Depends(get_charging_loc_service)
 ):
     update_charging_loc = charging_location_svc.update_charging_loc(charging_location_data, charging_location_id)
+
+@router.post("/find-nearby-charging-location", status_code=status.HTTP_201_CREATED)
+async def find_nearby_charging_loc(
+    charging_loc_data: FindNearbyChargingLocRequest = Body(...),
+    charging_loc_svc: ChargingLocService = Depends(get_charging_loc_service)
+):
+    return charging_loc_svc.find_nearby_charging_locs(charging_loc_data)

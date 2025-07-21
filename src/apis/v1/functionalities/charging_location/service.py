@@ -29,3 +29,7 @@ class ChargingLocService:
 
     def update_charging_loc(self, charging_location_data: dict, charging_location_id: int, ):
          return self.charging_loc_repo.update_charging_loc(charging_location_id , charging_location_data)
+
+    def find_nearby_charging_locs(self, charging_loc_data):
+        locations : List[ChargingLocation]= self.charging_loc_repo.find_nearby_charging_loc(charging_loc_data)
+

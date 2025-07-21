@@ -36,7 +36,7 @@ async def create_car(
 
 
 @router.post("/find-car", status_code=status.HTTP_200_OK)
-async def create_car(
+async def find_car(
     car_data: FindCarRequest = Body(...),
     car_svc: CarService = Depends(get_car_service)
 ):
@@ -46,14 +46,15 @@ async def create_car(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Error creating car: {str(e)}"
+            detail=f"Error finding car: {str(e)}"
         )
 
 
 @router.post("/update-car/{car_id}")
 async def update_car(
     car_data: UpdateCarRequest = Body(...),
-    car_svc: CarService = Depends(get_car_service)
+        car_id: int = Path(..., title="The Car ID"),
+        car_svc: CarService = Depends(get_car_service)
 ):
-    updated_car = car_svc.update_car(car_data)
+    updated_car = car_svc.update_car(car_data, car_id)
     return updated_car

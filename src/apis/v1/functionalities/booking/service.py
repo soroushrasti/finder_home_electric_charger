@@ -1,11 +1,7 @@
-from fastapi import APIRouter
 
-from src.apis.v1.enpoints.pricing import create_pricing
-from src.apis.v1.schemas.booking import FindBookingRequest, UpdateBookingRequest
+from src.apis.v1.schemas.booking import UpdateBookingRequest
 from src.apis.v1.schemas.booking import FindBookingRequest
 from src.core.db_repository.booking import BookingRepository
-from src.core.db_repository.booking import BookingRepositoryAbstract, BookingRepository
-from src.core.models import ChargingLocation, Pricing
 
 
 class BookingService:

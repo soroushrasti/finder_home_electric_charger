@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-
+from math import radians, sin, cos, atan2, sqrt
 from src.core.models import Booking, ChargingLocation, User
 from src.apis.v1.schemas.charging_location import FindChargingLocRequest
 from starlette import status
@@ -87,4 +87,20 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
     def get_booking_by_charging_location_id(self, charging_location_id: int):
         return self.db_session.query(Booking).filter(Booking.charging_location_id == charging_location_id).filter(Booking.end_time== None).first()
 
+    def find_nearby_charging_loc(self, charging_loc_data):
+        query = self.db_session.query(ChargingLocation)
+        if self.haversine_daistance(charging_loc_data, query)<= charging_loc_data.distance:
+            return query
+        return None
 
+    def haversine_daistance(lattitude1: str, longtitude1: str, lattitude2: str, longtitude2: str):
+            radios = 6371.0
+            lattitude1, longtitude1, lattitude2, longtitude2 = map(radians,[lattitude1, longtitude1, lattitude2, longtitude2])
+
+            dlat = lattitude2 - lattitude1
+            dlon = longtitude2 - longtitude1
+
+            a = sin(dlat / 2) ** 2 + cos(lattitude1) ** cos(lattitude2) ** sin(dlon / 2) ** 2
+            c = 2 * atan2(sqrt(a), sqrt(1 - a))
+            distance = radios * c
+            return distance
