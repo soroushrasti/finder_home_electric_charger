@@ -54,8 +54,8 @@ class ChargingLocation(Base):
     power_output = Column(Float, nullable=True)
     description = Column(Text, nullable=True)  # Description of the charging location
     currency = Column(Text, nullable=True)
-    lattitude = Column(Text, nullable=True)
-    longtitude = Column(Text, nullable=True)
+    latitude = Column(Text, nullable=True)
+    longitude = Column(Text, nullable=True)
 
 
 

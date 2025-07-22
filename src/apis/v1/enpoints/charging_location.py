@@ -16,7 +16,7 @@ async def create_charging_loc(
     charging_loc_svc: ChargingLocService = Depends(get_charging_loc_service)
 ):
     try:
-        new_charging_loc = charging_loc_svc.create_charging_loc(charging_loc_data.dict())
+        new_charging_loc = charging_loc_svc.create_charging_loc(charging_loc_data)
         return new_charging_loc
     except Exception as e:
         raise HTTPException(

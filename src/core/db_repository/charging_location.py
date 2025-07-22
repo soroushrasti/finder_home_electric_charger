@@ -3,7 +3,8 @@ from typing import List
 from fastapi import HTTPException
 from math import radians, sin, cos, atan2, sqrt
 from src.core.models import Booking, ChargingLocation, User
-from src.apis.v1.schemas.charging_location import FindChargingLocRequest, FindNearbyChargingLocRequest
+from src.apis.v1.schemas.charging_location import FindChargingLocRequest, FindNearbyChargingLocRequest, \
+    CreateChargingLocRequest
 from starlette import status
 from cmath import e
 
@@ -18,8 +19,8 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
     def get_charging_loc_by_id(self, user_id: int):
         return self.db_session.query(ChargingLocation).filter(ChargingLocation.user_id == user_id).all()
 
-    def create_charging_loc(self, charging_loc_data: dict):
-        new_charging_loc = ChargingLocation(**charging_loc_data)
+    def create_charging_loc(self, charging_loc_data: CreateChargingLocRequest):
+        new_charging_loc = ChargingLocation(**charging_loc_data.dict())
         self.db_session.add(new_charging_loc)
         self.db_session.commit()
         return new_charging_loc
@@ -51,6 +52,10 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
                 query.power_output = charging_location_data.power_output
             if charging_location_data.description:
                 query.description = charging_location_data.description
+            if charging_location_data.currency:
+                query.currency = charging_location_data.currency
+            if charging_location_data.latitude:
+                query.currency = charging_location_data.currency
             if charging_location_data.currency:
                 query.currency = charging_location_data.currency
             self.db_session.commit()
@@ -93,20 +98,20 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         locations: List[ChargingLocation] = self.db_session.query(ChargingLocation).all()
         filter_locations = []
         for location in locations:
-            if not charging_loc_data.lattitude or not charging_loc_data.longtitude:
-                if self.haversine_daistance(lattitude1=charging_loc_data.lattitude, longtitude1=charging_loc_data.longtitude,
-                                            lattitude2=location.lattitude, longtitude2=location.longtitude)<= charging_loc_data.distance:
+            if not charging_loc_data.latitude or not charging_loc_data.longitude:
+                if self.haversine_daistance(latitude1=charging_loc_data.latitude, longitude1=charging_loc_data.longitude,
+                                            latitude2=location.latitude, longitude2=location.longitude)<= charging_loc_data.distance:
                     filter_locations.append(location)
         return filter_locations
 
-    def haversine_daistance(self, lattitude1: str, longtitude1: str, lattitude2: str, longtitude2: str):
+    def haversine_daistance(self, latitude1: str, longitude1: str, latitude2: str, longitude2: str):
             radios = 6371.0
-            lattitude1, longtitude1, lattitude2, longtitude2 = map(radians,[lattitude1, longtitude1, lattitude2, longtitude2])
+            latitude1, longitude1, latitude2, longitude2 = map(radians,[latitude1, longitude1, latitude2, longitude2])
 
-            dlat = lattitude2 - lattitude1
-            dlon = longtitude2 - longtitude1
+            dlat = latitude2 - latitude1
+            dlon = longitude2 - longitude1
 
-            a = sin(dlat / 2) ** 2 + cos(lattitude1) ** cos(lattitude2) ** sin(dlon / 2) ** 2
+            a = sin(dlat / 2) ** 2 + cos(latitude1) ** cos(latitude2) ** sin(dlon / 2) ** 2
             c = 2 * atan2(sqrt(a), sqrt(1 - a))
             distance = radios * c
             return distance
