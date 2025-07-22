@@ -60,25 +60,25 @@ class TestBookingRepository(unittest.TestCase):
     def test_get_booking_by_id(self):
             # Setup
             car_id = "2"
-            self.db_session.query.return_value.filter.return_value.first.return_value = self.sample_booking
+            self.db_session.query.return_value.filter.return_value.all.return_value = [self.sample_booking]
 
             # Execute
             result = self.booking_repo.get_booking_by_id(car_id)
 
             # Assert
-            self.assertEqual(result, self.sample_booking)
+            self.assertEqual(result, [self.sample_booking])
             self.db_session.query.assert_called_once()
 
     def test_get_booking_by_id_not_found(self):
         # Setup
         user_id = "nonexistent_user"
-        self.db_session.query.return_value.filter.return_value.first.return_value = None
+        self.db_session.query.return_value.filter.return_value.all.return_value = []
 
         # Execute
         result = self.booking_repo.get_booking_by_id(user_id)
 
         # Assert
-        self.assertIsNone(result)
+        self.assertEqual(result, [])
 
     def test_find_booking(self):
         pass

@@ -79,13 +79,13 @@ class TestCarRepository(unittest.TestCase):
         self.assertEqual(result, [])
 
     # def test_find_car(self):
-    #     self.db_session.query.return_value.filter.return_value.first.return_value = self.sample_car
+    #     self.db_session.query.return_value.filter.return_value.first.return_value = [self.sample_car]
     #
     #     # Execute
-    #     find_car_sample = FindCarRequest(**self.sample_car_data)
-    #     result = self.car_repo.find_car(find_car_sample)
+    #     # find_car_sample = FindCarRequest(**self.sample_car_data)
+    #     result = self.car_repo.find_car(self.sample_car)
     #
     #     # Assert
-    #     self.assertEqual(result, self.sample_car)
+    #     self.assertEqual(result, [self.sample_car])
     #     self.db_session.query.assert_called_once()
 
