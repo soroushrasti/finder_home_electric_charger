@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer,Float, String, Enum, Text, ForeignKey, Boolean, DateTime
+from sqlalchemy import Column, Integer, Float, String, Enum, Text, ForeignKey, Boolean, DateTime, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum as PyEnum
 
@@ -54,9 +54,8 @@ class ChargingLocation(Base):
     power_output = Column(Float, nullable=True)
     description = Column(Text, nullable=True)  # Description of the charging location
     currency = Column(Text, nullable=True)
-    latitude = Column(Text, nullable=True)
-    longitude = Column(Text, nullable=True)
-
+    latitude = Column(Numeric(10, 7), nullable=True)
+    longitude = Column(Numeric(10, 7), nullable=True)
 
 
 class Booking(Base):

@@ -104,7 +104,7 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
                     filter_locations.append(location)
         return filter_locations
 
-    def haversine_daistance(self, latitude1: str, longitude1: str, latitude2: str, longitude2: str):
+    def haversine_daistance(self, latitude1: float, longitude1: float, latitude2: float, longitude2: float):
             radios = 6371.0
             latitude1, longitude1, latitude2, longitude2 = map(radians,[latitude1, longitude1, latitude2, longitude2])
 
