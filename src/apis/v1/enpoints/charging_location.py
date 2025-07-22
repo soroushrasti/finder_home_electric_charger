@@ -24,7 +24,7 @@ async def create_charging_loc(
             detail=f"Error creating charging loc: {str(e)}"
         )
 
-@router.post("/find-charging-location", status_code=status.HTTP_201_CREATED)
+@router.post("/find-charging-location", status_code=status.HTTP_200_OK)
 async def find_charging_loc(
     charging_loc_data: FindChargingLocRequest = Body(...),
     charging_loc_svc: ChargingLocService = Depends(get_charging_loc_service)
@@ -39,7 +39,7 @@ async def update_charging_loc(
 ):
     update_charging_loc = charging_location_svc.update_charging_loc(charging_location_data, charging_location_id)
 
-@router.post("/find-nearby-charging-location", status_code=status.HTTP_201_CREATED)
+@router.post("/find-nearby-charging-locations", status_code=status.HTTP_200_OK)
 async def find_nearby_charging_loc(
     charging_loc_data: FindNearbyChargingLocRequest = Body(...),
     charging_loc_svc: ChargingLocService = Depends(get_charging_loc_service)

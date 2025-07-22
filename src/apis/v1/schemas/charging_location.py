@@ -64,4 +64,4 @@ class UpdateChargingLocRequest(BaseModel):
 class FindNearbyChargingLocRequest(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    distance: Optional[float] = 10
+    distance: Optional[float] = 1000000

@@ -72,7 +72,7 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         pass
 
     def find_charging_loc(self, find_charging_location_data: FindChargingLocRequest):
-        query = self.db_session.query(ChargingLocation).join(User).filter(User.user_id == ChargingLocation. user_id)
+        query = self.db_session.query(ChargingLocation).join(User, User.user_id == ChargingLocation.user_id)
 
         if find_charging_location_data.post_code:
             query = query.filter(ChargingLocation.post_code == find_charging_location_data.post_code)
@@ -98,7 +98,8 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         locations: List[ChargingLocation] = self.db_session.query(ChargingLocation).all()
         filter_locations = []
         for location in locations:
-            if not charging_loc_data.latitude or not charging_loc_data.longitude:
+            print(location.latitude )
+            if  charging_loc_data.latitude and charging_loc_data.longitude and location.latitude and location.longitude:
                 if self.haversine_daistance(latitude1=charging_loc_data.latitude, longitude1=charging_loc_data.longitude,
                                             latitude2=location.latitude, longitude2=location.longitude)<= charging_loc_data.distance:
                     filter_locations.append(location)
