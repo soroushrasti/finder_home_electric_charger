@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, Float, String, Enum, Text, ForeignKey, Boolean, DateTime, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum as PyEnum
+from sqlalchemy.orm import relationship  # Add this import
 
 Base = declarative_base()
 
@@ -69,6 +70,8 @@ class Booking(Base):
     review_rate = Column(Integer, nullable=True)  # Review rating (1-5)
     review_message = Column(Text, nullable=True)  # Review message
     status = Column(Text, nullable=True)
+    car = relationship("Car")
+    charging_location = relationship("ChargingLocation")
 
 
 class Notification(Base):

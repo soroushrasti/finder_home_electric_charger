@@ -98,7 +98,6 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         locations: List[ChargingLocation] = self.db_session.query(ChargingLocation).all()
         filter_locations = []
         for location in locations:
-            print(location.latitude )
             if  charging_loc_data.latitude and charging_loc_data.longitude and location.latitude and location.longitude:
                 if self.haversine_daistance(latitude1=charging_loc_data.latitude, longitude1=charging_loc_data.longitude,
                                             latitude2=location.latitude, longitude2=location.longitude)<= charging_loc_data.distance:

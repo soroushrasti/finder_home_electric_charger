@@ -5,7 +5,7 @@ from src.apis.v1.schemas.booking import FindBookingRequest, UpdateBookingRequest
 from src.apis.v1.schemas.booking import FindBookingRequest
 from src.core.models import Booking, User, ChargingLocation, Car, Pricing
 from starlette import status
-
+from sqlalchemy.orm import joinedload
 
 class BookingRepositoryAbstract:
     pass
@@ -64,7 +64,9 @@ class BookingRepository(BookingRepositoryAbstract):
             pass
 
     def find_booking(self, find_booking_data: FindBookingRequest):
-        query = (self.db_session.query(Booking).join(Car).filter(Car.car_id == Booking.car_id).
+        query = (self.db_session.query(Booking)
+                 .options(joinedload(Booking.car), joinedload(Booking.charging_location))
+                 .join(Car).filter(Car.car_id == Booking.car_id).
                  join(ChargingLocation).filter(ChargingLocation.charging_location_id == Booking.charging_location_id))
 
         if find_booking_data.car_id:
