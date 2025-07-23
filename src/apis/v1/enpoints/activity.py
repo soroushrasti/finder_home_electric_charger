@@ -8,7 +8,7 @@ from src.core.utils.authentication import authenticate
 router = APIRouter(dependencies=[Depends(authenticate)])
 
 
-@router.post("/find-activity", status_code=status.HTTP_200_OK)
+@router.post("/get-activity", status_code=status.HTTP_200_OK)
 async def find_activity(
     activity_data: FindActivityRequest = Body(...),
     activity_svc: ActivityService = Depends(get_activity_service)
