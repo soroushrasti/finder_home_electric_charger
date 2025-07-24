@@ -75,15 +75,15 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         query = self.db_session.query(ChargingLocation).join(User, User.user_id == ChargingLocation.user_id)
 
         if find_charging_location_data.post_code:
-            query = query.filter(ChargingLocation.post_code == find_charging_location_data.post_code)
+            query = query.filter(ChargingLocation.post_code.lower() == find_charging_location_data.post_code.lower())
         if find_charging_location_data.alley:
-            query = query.filter(ChargingLocation.alley == find_charging_location_data.alley)
+            query = query.filter(ChargingLocation.alley.lower() == find_charging_location_data.alley.lower())
         if find_charging_location_data.street:
-            query = query.filter(ChargingLocation.street == find_charging_location_data.street)
+            query = query.filter(ChargingLocation.street.lower() == find_charging_location_data.street.lower())
         if find_charging_location_data.home_phone_number:
-            query = query.filter(ChargingLocation.home_phone_number == find_charging_location_data.home_phone_number)
+            query = query.filter(ChargingLocation.home_phone_number.lower() == find_charging_location_data.home_phone_number.lower())
         if find_charging_location_data.city:
-            query = query.filter(ChargingLocation.city == find_charging_location_data.city)
+            query = query.filter(ChargingLocation.city.lower() == find_charging_location_data.city.lower())
         if find_charging_location_data.fast_charging:
             query = query.filter(ChargingLocation.fast_charging == find_charging_location_data.fast_charging)
         if find_charging_location_data.user_id:

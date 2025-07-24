@@ -33,5 +33,14 @@ class ChargingLocService:
 
     def find_nearby_charging_locs(self, charging_loc_data: FindNearbyChargingLocRequest):
         locations : List[ChargingLocation]= self.charging_loc_repo.find_nearby_charging_loc(charging_loc_data)
+
+        for location in locations:
+            # if we have a booking and it has not ended, we set is_available to False
+            booking: Optional[Booking] = self.charging_loc_repo.get_booking_by_charging_location_id(
+                location.charging_location_id)
+            if booking:
+                location.is_available = False
+            else:
+                location.is_available = True
         return locations
 

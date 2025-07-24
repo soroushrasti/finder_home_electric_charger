@@ -74,13 +74,13 @@ class BookingRepository(BookingRepositoryAbstract):
         if find_booking_data.charging_location_id:
             query = query.filter(Booking.charging_location_id == find_booking_data.charging_location_id)
         if find_booking_data.review_rate:
-            query = query.filter(Booking.review_rate == find_booking_data.review_rate)
+            query = query.filter(Booking.review_rate.lower() == find_booking_data.review_rate.lower())
         if find_booking_data.start_time:
             query = query.filter(Booking.start_time == find_booking_data.start_time)
         if find_booking_data.end_time:
             query = query.filter(Booking.end_time == find_booking_data.end_time)
         if find_booking_data.review_message:
-            query = query.filter(Booking.review_message == find_booking_data.review_message)
+            query = query.filter(Booking.review_message.lower() == find_booking_data.review_message.lower())
         if find_booking_data.status:
             query = query.filter(Booking.status == find_booking_data.status)
         if find_booking_data.charger_location_owner_user_id:

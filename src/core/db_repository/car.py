@@ -55,12 +55,12 @@ class CarRepository(CarRepositoryAbstract):
         if find_car_data.user_id:
             query = query.filter(Car.user_id == find_car_data.user_id)
         if find_car_data.model:
-            query = query.filter(Car.model == find_car_data.model)
+            query = query.filter(Car.model.lower() == find_car_data.model.lower())
         if find_car_data.year:
             query = query.filter(Car.year == find_car_data.year)
         if find_car_data.color:
-            query = query.filter(Car.color == find_car_data.color)
+            query = query.filter(Car.color.lower() == find_car_data.color.lower())
         if find_car_data.license_plate:
-            query = query.filter(Car.license_plate == find_car_data.license_plate)
+            query = query.filter(Car.license_plate.lower() == find_car_data.license_plate.lower())
 
         return query.all()
