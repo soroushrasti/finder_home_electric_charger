@@ -3,6 +3,7 @@ import smtplib
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from pyexpat.errors import messages
+from typing import Optional
 
 from fastapi import HTTPException
 from httpx import Client
@@ -34,6 +35,12 @@ class UserService:
 
     # Add to src/apis/v1/functionalities/user/service.py
     def create_user(self, user_data: dict):
+        user: Optional[User] = self.user_repo.get_user_by_email(user_data['email'])
+        if user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this email already exists"
+            )
         user_data['password'] = hash_password(user_data['password'])
         user= self.user_repo.create_user(user_data)
         msg = MIMEText(
