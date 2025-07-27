@@ -1,3 +1,5 @@
+from sqlalchemy.sql.functions import func
+
 from src.apis.v1.schemas.notification import FindNotificationRequest
 from src.core.models import Notification
 
@@ -33,11 +35,11 @@ class NotificationRepository(NotificationRepositoryAbstract):
         if find_notification_data.booking_id:
             query = query.filter(Notification.booking_id == find_notification_data.booking_id)
         if find_notification_data.message:
-            query = query.filter(Notification.message.lower() == find_notification_data.message.lower())
+            query = query.filter(func.lower(Notification.message) == find_notification_data.message.lower())
         if find_notification_data.is_read:
             query = query.filter(Notification.is_read == find_notification_data.is_read)
         if find_notification_data.level:
-            query = query.filter(Notification.level.lower() == find_notification_data.level.lower())
+            query = query.filter(func.lower(Notification.level) == find_notification_data.level.lower())
 
 
         return query.all()

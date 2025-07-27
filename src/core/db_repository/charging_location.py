@@ -2,6 +2,9 @@ from typing import List
 
 from fastapi import HTTPException
 from math import radians, sin, cos, atan2, sqrt
+
+from sqlalchemy.sql.functions import func
+
 from src.core.models import Booking, ChargingLocation, User
 from src.apis.v1.schemas.charging_location import FindChargingLocRequest, FindNearbyChargingLocRequest, \
     CreateChargingLocRequest
@@ -75,15 +78,15 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         query = self.db_session.query(ChargingLocation).join(User, User.user_id == ChargingLocation.user_id)
 
         if find_charging_location_data.post_code:
-            query = query.filter(ChargingLocation.post_code.lower() == find_charging_location_data.post_code.lower())
+            query = query.filter(func.lower(ChargingLocation.post_code) == find_charging_location_data.post_code.lower())
         if find_charging_location_data.alley:
-            query = query.filter(ChargingLocation.alley.lower() == find_charging_location_data.alley.lower())
+            query = query.filter(func.lower(ChargingLocation.alley) == find_charging_location_data.alley.lower())
         if find_charging_location_data.street:
-            query = query.filter(ChargingLocation.street.lower() == find_charging_location_data.street.lower())
+            query = query.filter(func.lower(ChargingLocation.street) == find_charging_location_data.street.lower())
         if find_charging_location_data.home_phone_number:
-            query = query.filter(ChargingLocation.home_phone_number.lower() == find_charging_location_data.home_phone_number.lower())
+            query = query.filter(func.lower(ChargingLocation.home_phone_number) == find_charging_location_data.home_phone_number.lower())
         if find_charging_location_data.city:
-            query = query.filter(ChargingLocation.city.lower() == find_charging_location_data.city.lower())
+            query = query.filter(func.lower(ChargingLocation.city) == find_charging_location_data.city.lower())
         if find_charging_location_data.fast_charging:
             query = query.filter(ChargingLocation.fast_charging == find_charging_location_data.fast_charging)
         if find_charging_location_data.user_id:
@@ -91,7 +94,7 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
 
         return query.all()
 
-    def get_booking_by_charging_location_id(self, charging_location_id: int):
+    def get_non_ended_booking_by_charging_location_id(self, charging_location_id: int):
         return self.db_session.query(Booking).filter(Booking.charging_location_id == charging_location_id).filter(Booking.end_time== None).first()
 
     def find_nearby_charging_loc(self, charging_loc_data: FindNearbyChargingLocRequest):

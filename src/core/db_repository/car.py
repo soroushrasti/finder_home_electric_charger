@@ -1,5 +1,7 @@
 from cmath import e
 from fastapi import HTTPException
+from sqlalchemy.sql.functions import func
+
 from src.apis.v1.schemas.car import FindCarRequest
 from src.core.models import Car
 from starlette import status
@@ -55,12 +57,12 @@ class CarRepository(CarRepositoryAbstract):
         if find_car_data.user_id:
             query = query.filter(Car.user_id == find_car_data.user_id)
         if find_car_data.model:
-            query = query.filter(Car.model.lower() == find_car_data.model.lower())
+            query = query.filter(func.lower(Car.model.lower) == find_car_data.model.lower())
         if find_car_data.year:
             query = query.filter(Car.year == find_car_data.year)
         if find_car_data.color:
-            query = query.filter(Car.color.lower() == find_car_data.color.lower())
+            query = query.filter(func.lower(Car.color) == find_car_data.color.lower())
         if find_car_data.license_plate:
-            query = query.filter(Car.license_plate.lower() == find_car_data.license_plate.lower())
+            query = query.filter(func.lower(Car.license_plate) == find_car_data.license_plate.lower())
 
         return query.all()

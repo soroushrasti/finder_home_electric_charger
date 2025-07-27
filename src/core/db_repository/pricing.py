@@ -1,3 +1,5 @@
+from sqlalchemy.sql.functions import func
+
 from src.apis.v1.schemas.pricing import FindPricingRequest
 from src.core.models import Car, ChargingLocation, Pricing, Booking
 
@@ -23,7 +25,7 @@ class PricingRepository(PricingRepositoryAbstract):
         if find_pricing_data.pricing_id:
             query = query.filter(Pricing.pricing_id == find_pricing_data.pricing_id)
         if find_pricing_data.currency:
-            query = query.filter(Pricing.currency.lower() == find_pricing_data.currency.lower())
+            query = query.filter(func.lower(Pricing.currency) == find_pricing_data.currency.lower())
         if find_pricing_data.total_value:
             query = query.filter(Pricing.total_value == find_pricing_data.total_value)
         if find_pricing_data.price_per_khw:

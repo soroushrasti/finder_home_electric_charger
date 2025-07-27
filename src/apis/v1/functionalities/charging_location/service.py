@@ -20,7 +20,7 @@ class ChargingLocService:
 
         for location in locations:
             # if we have a booking and it has not ended, we set is_available to False
-            booking: Optional[Booking] = self.charging_loc_repo.get_booking_by_charging_location_id(location.charging_location_id)
+            booking: Optional[Booking] = self.charging_loc_repo.get_non_ended_booking_by_charging_location_id(location.charging_location_id)
             if booking:
                 location.is_available = False
             else:
@@ -36,7 +36,7 @@ class ChargingLocService:
 
         for location in locations:
             # if we have a booking and it has not ended, we set is_available to False
-            booking: Optional[Booking] = self.charging_loc_repo.get_booking_by_charging_location_id(
+            booking: Optional[Booking] = self.charging_loc_repo.get_non_ended_booking_by_charging_location_id(
                 location.charging_location_id)
             if booking:
                 location.is_available = False
