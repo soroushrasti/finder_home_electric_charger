@@ -5,5 +5,5 @@ WORKDIR /app
 RUN pip install poetry 
 RUN poetry install
 
-CMD ["poetry", "run", "python", "main.py"]
+CMD ["poetry", "run", "python", "src/main.py"]
 EXPOSE 8080
