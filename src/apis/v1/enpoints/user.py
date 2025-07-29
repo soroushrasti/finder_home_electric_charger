@@ -73,11 +73,11 @@ async def resend_verification(
         user_data: ResendVerificationRequest = Body(...),
         user_svc: UserService = Depends(get_user_service)
     ):
-        return user_svc.resend_verification(user_data.user_id)
+        return user_svc.resend_verification(user_data.user_id, user_data.language)
 
 @router.post("/user-forgot-password")
 async def forgot_password(
         user_data: ForgotPasswordRequest = Body(...),
         user_svc: UserService = Depends(get_user_service)
     ):
-        return user_svc.forgot_password(user_data.email)
+        return user_svc.forgot_password(user_data.email, user_data.language)

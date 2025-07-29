@@ -42,6 +42,12 @@ class UserRepository(UserRepositoryAbstract):
     def get_user_by_email(self, email):
         user = self.db.query(User).filter(User.email == email).first()
         return user
+    def get_user_by_user_name(self, username):
+        user = self.db.query(User).filter(User.username == username).first()
+        return user
+    def get_user_by_mobile_number(self, mobilenumber):
+        user = self.db.query(User).filter(User.mobile_number == mobilenumber).first()
+        return user
 
     def validate_user(self, email_verification_code: str, phone_verification_code: str, user_id: int):
         user = self.db.query(User).filter(User.user_id == user_id).first()

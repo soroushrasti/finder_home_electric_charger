@@ -35,17 +35,46 @@ class UserService:
 
     # Add to src/apis/v1/functionalities/user/service.py
     def create_user(self, user_data: dict):
-        user: Optional[User] = self.user_repo.get_user_by_email(user_data['email'])
-        if user:
+        user1: Optional[User] = self.user_repo.get_user_by_email(user_data['email'])
+        user2: Optional[User] = self.user_repo.get_user_by_user_name(user_data['username'])
+        user3: Optional[User] = self.user_repo.get_user_by_mobile_number(user_data['mobile_number'])
+
+        if user1:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="User with this email already exists"
             )
+        if user2:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this username already exists"
+            )
+        if user3:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this mobile number already exists"
+            )
         user_data['password'] = hash_password(user_data['password'])
         user= self.user_repo.create_user(user_data)
-        msg = MIMEText(
-            f"Thanks for registration in finding charger location app. This is your verification code: {user.email_verification_code}")
-        self.send_email(user, msg)
+        if user_data['language'] == "English":
+             msg = MIMEText(
+                f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
+             self.send_email(user, msg)
+        if user_data['language'] == "Farsi":
+            msg = MIMEText(f"سلام کاربر عزیز"
+                           f"\n"
+                           f"از ثبت نام شما در برنامه یافتن محل شارژر متشکریم"
+                           f"\n"
+                           f"برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:"
+                           f"\n"
+                           f"کد تایید:{user.email_verification_code}"
+                           f"\n"
+                           f"این کد فقط برای یک بار استفاده معتبر است"
+                           f"\n"
+                           f"با احترام،"
+                           f"\n"
+                           f"تیم پشتیبانی برنامه یافتن محل شارژر")
+            self.send_email(user, msg)
         return user
 
     def login_user(self, email, password):
@@ -57,21 +86,53 @@ class UserService:
     def validate_user(self,email_verification_code:str, phone_verification_code:str, user_id: int):
         return self.user_repo.validate_user(email_verification_code, phone_verification_code, user_id)
 
-    def resend_verification(self,user_id: int):
+    def resend_verification(self,user_id: int, language: str):
         user: User = self.user_repo.get_user_by_id(user_id)
         user= self.user_repo.reset_password(user.email)
         if user:
-            msg = MIMEText(
-                f"Thanks for registration in finding charger location app. This is your verification code: {user.email_verification_code}")
-            self.send_email(user, msg)
+             if language == "English":
+                msg = MIMEText(
+                    f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
+                self.send_email(user, msg)
+             if language == "Farsi":
+                msg = MIMEText(f"سلام کاربر عزیز"
+                               f"\n"
+                               f"از ثبت نام شما در برنامه یافتن محل شارژر متشکریم"
+                               f"\n"
+                               f"برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:"
+                               f"\n"
+                               f"کد تایید:{user.email_verification_code}"
+                               f"\n"
+                               f"این کد فقط برای یک بار استفاده معتبر است"
+                               f"\n"
+                               f"با احترام،"
+                               f"\n"
+                               f"تیم پشتیبانی برنامه یافتن محل شارژر")
+                self.send_email(user, msg)
         return user
 
-    def forgot_password(self, email_address: str) -> str:
+    def forgot_password(self, email_address: str, language: str) -> str:
         user= self.user_repo.reset_password(email_address)
         if user:
-            msg = MIMEText(
-                f"This is email because you have forgotten your password, please use this token in the app to reset the password: {user.email_verification_code} ")
-            self.send_email(user, msg)
+             if language == "English":
+               msg = MIMEText(
+                   f"Hello dear user\nThank you for registering in the Finding Charger Location app\nThe following verification code has been sent to you due to a forgotten password. Please use this code in the app to reset your password:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
+               self.send_email(user, msg)
+             if language == "Farsi":
+                msg = MIMEText(f"سلام کاربر عزیز"
+                               f"\n"
+                               f"از ثبت نام شما در برنامه یافتن محل شارژر متشکریم"
+                               f"\n"
+                               f"به دلیل فراموشی رمز عبور کد تایید زیر برای شما ارسال شده است، لطفاً از این کد در برنامه برای تنظیم مجدد رمز عبور استفاده کنید::"
+                               f"\n"
+                               f"کد تایید:{user.email_verification_code}"
+                               f"\n"
+                               f"این کد فقط برای یک بار استفاده معتبر است"
+                               f"\n"
+                               f"با احترام،"
+                               f"\n"
+                               f"تیم پشتیبانی برنامه یافتن محل شارژر")
+                self.send_email(user, msg)
         return user
 
     def update_user(self,user_data: UpdateUserRequest, user_id: int):
