@@ -57,6 +57,11 @@ app.include_router(activity_router, tags=["activity router"])
 
 
 def run_migrations():
+    logger.info("=== Environment Debug ===")
+    logger.info(f"RAILWAY_ENVIRONMENT: {os.getenv('RAILWAY_ENVIRONMENT', 'Not set')}")
+    logger.info(f"DATABASE_URL from env: {os.getenv('DATABASE_URL', 'Not set')}")
+    logger.info(f"BaseConfig DATABASE_URL: {settings.DATABASE_URL}")
+    logger.info("=== End Debug ===")
     db_url = os.getenv("DATABASE_URL") or settings.DATABASE_URL
 
     logger.info(f"Found DATABASE_URL: {db_url[:30]}...")
