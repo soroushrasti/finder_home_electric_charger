@@ -3,7 +3,7 @@
 ## Overview
 Finder Home Electric Charger is a Python-based application designed to connect electric car owners searching for a charging station with homeowners who have a space to accommodate cars for charging. This app aims to simplify the process of finding and offering electric car charging spots, fostering a community-driven solution to the growing demand for EV charging infrastructure.
 
-## Features
+## Features 
 
 - **User Registration**: Separate registration for electric car owners and homeowners.
 - **Search Functionality**: Electric car owners can search for nearby charging spots based on location.
