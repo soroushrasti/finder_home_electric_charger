@@ -57,7 +57,7 @@ app.include_router(activity_router, tags=["activity router"])
 
 
 def run_migrations():
-    db_url = BaseConfig().DATABASE_URL
+    db_url = os.getenv("DATABASE_URL", BaseConfig().DATABASE_URL)
     if not db_url:
         logger.error("DATABASE_URL environment variable is not set")
         logger.info("Set it with: export DATABASE_URL='sqlite:///src/database.db'")

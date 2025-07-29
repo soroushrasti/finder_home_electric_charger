@@ -17,7 +17,11 @@ class BaseConfig( BaseSettings):
     DATABASE_URL: str = Field(default="sqlite:///database.db")
 
     class Config:
-        env_file = ".env.base"
+        env_file = None if os.getenv("RAILWAY_ENVIRONMENT") else ".env.base"
+        case_sensitive = False
+        extra = "allow"
+        env_prefix = ""
+
 
 
 settings = BaseConfig()
