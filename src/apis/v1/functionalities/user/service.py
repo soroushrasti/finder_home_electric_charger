@@ -42,17 +42,17 @@ class UserService:
         if user1:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User with this email already exists"
+                detail="userExistEmail"
             )
         if user2:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User with this username already exists"
+                detail="userExistUsername"
             )
         if user3:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User with this mobile number already exists"
+                detail="userExistMobileNumber"
             )
         user_data['password'] = hash_password(user_data['password'])
         user= self.user_repo.create_user(user_data)
