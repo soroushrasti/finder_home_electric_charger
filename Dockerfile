@@ -5,8 +5,5 @@ WORKDIR /app
 RUN pip install poetry 
 RUN poetry install
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["poetry", "run", "python", "main.py"]
 EXPOSE 8080

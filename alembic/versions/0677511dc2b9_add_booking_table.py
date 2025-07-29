@@ -30,7 +30,6 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
     sa.PrimaryKeyConstraint('booking_id')
     )
-    op.drop_table('booking')
     # ### end Alembic commands ###
 
 
