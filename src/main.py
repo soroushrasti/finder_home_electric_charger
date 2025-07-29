@@ -1,5 +1,6 @@
 import logging
-
+import subprocess
+import sys
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -54,6 +55,14 @@ app.include_router(pricing_router, tags=["pricing router"])
 app.include_router(activity_router, tags=["activity router"])
 
 
+def run_migrations():
+    """Run Alembic migrations at startup"""
+    try:
+        subprocess.run(["poetry", "run", "alembic", "upgrade", "head"], check=True)
+        print("Database migrations completed successfully")
+    except subprocess.CalledProcessError as e:
+        print(f"Migration failed: {e}")
+        sys.exit(1)
 
 @app.get("/")
 def index():
@@ -61,5 +70,9 @@ def index():
 
 
 if __name__ == '__main__':
+    logger.info("Running migrations...")
+    run_migrations()
+    logger.info("Starting FastAPI application...")
+    logger.info(settings.HOST)
     logger.info(settings.PORT)
     uvicorn.run("src.main:app", host=settings.HOST, port=settings.PORT, reload=False)
