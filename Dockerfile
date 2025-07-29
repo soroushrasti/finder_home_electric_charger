@@ -5,6 +5,5 @@ WORKDIR /app
 RUN pip install poetry 
 RUN poetry install
 
-CMD ["poetry", "run", "python", "-m", "src.main"]
-
+CMD ["sh", "-c", "poetry run python migrate.py && poetry run python main.py"]
 EXPOSE 8080
