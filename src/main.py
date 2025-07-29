@@ -57,10 +57,9 @@ app.include_router(activity_router, tags=["activity router"])
 
 
 def run_migrations():
-    # Check if DATABASE_URL_SQLALCHEMY is set
-    db_url = BaseConfig().DATABASE_URL_SQLALCHEMY
+    db_url = BaseConfig().DATABASE_URL
     if not db_url:
-        logger.error("DATABASE_URL_SQLALCHEMY environment variable is not set")
+        logger.error("DATABASE_URL environment variable is not set")
         logger.info("Set it with: export DATABASE_URL='sqlite:///src/database.db'")
         sys.exit(1)
 
@@ -81,16 +80,18 @@ def run_migrations():
 
         logger.info(f"Running database migrations with URL: {db_url[:20]}...")
 
-        # Check if alembic.ini exists
-        alembic_ini_path = "../alembic.ini"
-        if not os.path.exists(alembic_ini_path):
-            logger.error(f"alembic.ini not found at: {os.path.abspath(alembic_ini_path)}")
-            sys.exit(1)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)  # Go up from src/ to project root
 
-        # Check if alembic directory exists
-        alembic_dir_path = "../alembic"
-        if not os.path.exists(alembic_dir_path):
-            logger.error(f"alembic directory not found at: {os.path.abspath(alembic_dir_path)}")
+        alembic_ini_path = os.path.join(project_root, "alembic.ini")
+        alembic_dir_path = os.path.join(project_root, "alembic")
+
+        # Check if alembic.ini exists
+        if not os.path.exists(alembic_ini_path):
+            logger.error(f"alembic.ini not found at: {alembic_ini_path}")
+            logger.error(f"Current working directory: {os.getcwd()}")
+            logger.error(f"Project root: {project_root}")
+            logger.error(f"Files in project root: {os.listdir(project_root)}")
             sys.exit(1)
 
         logger.info(f"Using alembic.ini at: {os.path.abspath(alembic_ini_path)}")

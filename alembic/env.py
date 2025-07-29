@@ -11,9 +11,9 @@ from src.config.base import BaseConfig
 # access to the values within the .ini file in use.
 config = context.config
 
-db_url = BaseConfig().DATABASE_URL_SQLALCHEMY
+db_url = BaseConfig().DATABASE_URL
 if not db_url:
-    raise RuntimeError("DATABASE_URL_SQLALCHEMY is not set")
+    raise RuntimeError("DATABASE_URL is not set")
 config.set_main_option("sqlalchemy.url", db_url)
 
 # Interpret the config file for Python logging.

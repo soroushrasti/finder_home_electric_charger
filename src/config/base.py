@@ -15,7 +15,6 @@ class BaseConfig( BaseSettings):
     ACCOUNT_TOKEN: str = Field(default="account_token")
     TWILIO_NUMBER: str = Field(default="twilio_number")
     DATABASE_URL: str = Field(default="sqlite:///database.db")
-    DATABASE_URL_SQLALCHEMY: str = Field(default="sqlite:///database.db")
 
     class Config:
         env_file = ".env.base"

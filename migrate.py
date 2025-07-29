@@ -8,10 +8,10 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    # Check if DATABASE_URL_SQLALCHEMY is set
+    # Check if DATABASE_URL is set
     db_url = BaseConfig().DATABASE_URL
     if not db_url:
-        logger.error("DATABASE_URL_SQLALCHEMY environment variable is not set")
+        logger.error("DATABASE_URL environment variable is not set")
         logger.info("Set it with: export DATABASE_URL='sqlite:///src/database.db'")
         sys.exit(1)
 
