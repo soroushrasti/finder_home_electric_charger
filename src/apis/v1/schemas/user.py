@@ -25,7 +25,7 @@ class CreateUserRequest(BaseModel):
     postcode_of_home: Optional[str] = None
     user_type: Optional[UserType] = None
     mobile_number: Optional[str]  = None
-    language: Optional[str] = None
+    language: Optional[str] = "English"
 
     @validator('username', pre=True, always=True)
     def set_username_from_email(cls, username, values):
@@ -48,12 +48,12 @@ class ResendVerificationRequest(BaseModel):
     user_id: Optional[int] = None
     email_verification_code: Optional[str] = None
     phone_verification_code: Optional[str] = None
-    language: Optional[str] = None
+    language: Optional[str] = "English"
 
 class ForgotPasswordRequest(BaseModel):
      email: Optional[str] = None
      mobile_number: Optional[str] = None
-     language: Optional[str] = None
+     language: Optional[str] = "English"
 
 class UpdateUserRequest(BaseModel):
     username: Optional[str] = None
