@@ -6,13 +6,14 @@ class BaseConfig( BaseSettings):
     PORT: int = Field(default=8080)
     DEBUG: str = Field(default="True")
     TOKEN: str = Field(default="12345")
-    EMAIL: str = Field(default="car.charger.app@gmail.com")
-    PASSWORD: str = Field(default="wltabaqxvdspakuv")
+    EMAIL: str = Field(default="email")
+    PASSWORD: str = Field(default="password")
     SMTP_SERVER: str = Field(default="smtp.gmail.com")
     SMTP_PORT: str = Field(default="587")
     ACCOUNT_SID: str = Field(default="account_sid")
     ACCOUNT_TOKEN: str = Field(default="account_token")
     TWILIO_NUMBER: str = Field(default="twilio_number")
+    DATABASE_URL: str = Field(default="sqlite:///database.db")
 
     class Config:
         env_file = ".env.base"
