@@ -28,14 +28,23 @@ class UserRepository(UserRepositoryAbstract):
         return self.db.query(User).filter(User.user_id == user_id).first()
 
     def create_user(self, user_data: dict) -> User:
-        new_user = User(**user_data)
+        new_user = User(
+            username=user_data.get('username'),
+            first_name=user_data.get('first_name'),
+            last_name=user_data.get('last_name'),
+            password=user_data.get('password'),
+            email=user_data.get('email'),
+            address_of_home=user_data.get('address_of_home'),
+            city_of_home=user_data.get('city_of_home'),
+            postcode_of_home=user_data.get('postcode_of_home'),
+            user_type=user_data.get('user_type'),
+            mobile_number=user_data.get('mobile_number')
+        )
         new_user.email_verification_code = random.randint(10000, 99999)
         new_user.phone_verification_code = random.randint(10000, 99999)
         new_user.expired_time_email_verification = datetime.now() + timedelta(minutes=15)
 
         self.db.add(new_user)
-        self.db.commit()
-        self.db.refresh(new_user)
 
         return new_user
 

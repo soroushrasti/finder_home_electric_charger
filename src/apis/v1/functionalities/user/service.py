@@ -35,47 +35,52 @@ class UserService:
 
     # Add to src/apis/v1/functionalities/user/service.py
     def create_user(self, user_data: dict):
-        user1: Optional[User] = self.user_repo.get_user_by_email(user_data['email'])
-        user2: Optional[User] = self.user_repo.get_user_by_user_name(user_data['username'])
-        user3: Optional[User] = self.user_repo.get_user_by_mobile_number(user_data['mobile_number'])
-
-        if user1:
+        if user_data.get('email') is not None and self.user_repo.get_user_by_email(user_data.get('email')):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="userExistEmail"
             )
-        if user2:
+        if user_data.get('username') is not None and self.user_repo.get_user_by_user_name(user_data.get('username')):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="userExistUsername"
             )
-        if user3:
+        if user_data.get('mobile_number') is not None and self.user_repo.get_user_by_mobile_number(user_data.get('mobile_number')):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="userExistMobileNumber"
             )
-        user_data['password'] = hash_password(user_data['password'])
-        user= self.user_repo.create_user(user_data)
-        if user_data['language'] == "English":
-             msg = MIMEText(
-                f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
-             self.send_email(user, msg)
-        if user_data['language'] == "Farsi":
-            msg = MIMEText(f"سلام کاربر عزیز"
-                           f"\n"
-                           f"از ثبت نام شما در برنامه یافتن محل شارژر متشکریم"
-                           f"\n"
-                           f"برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:"
-                           f"\n"
-                           f"کد تایید:{user.email_verification_code}"
-                           f"\n"
-                           f"این کد فقط برای یک بار استفاده معتبر است"
-                           f"\n"
-                           f"با احترام،"
-                           f"\n"
-                           f"تیم پشتیبانی برنامه یافتن محل شارژر")
-            self.send_email(user, msg)
-        return user
+        try:
+            user_data['password'] = hash_password(user_data['password'])
+            user= self.user_repo.create_user(user_data)
+            if user_data['language'] == "English":
+                 msg = MIMEText(
+                    f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
+                 self.send_email(user, msg)
+            if user_data['language'] == "Farsi":
+                msg = MIMEText(f"سلام کاربر عزیز"
+                               f"\n"
+                               f"از ثبت نام شما در برنامه یافتن محل شارژر متشکریم"
+                               f"\n"
+                               f"برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:"
+                               f"\n"
+                               f"کد تایید:{user.email_verification_code}"
+                               f"\n"
+                               f"این کد فقط برای یک بار استفاده معتبر است"
+                               f"\n"
+                               f"با احترام،"
+                               f"\n"
+                               f"تیم پشتیبانی برنامه یافتن محل شارژر")
+                self.send_email(user, msg)
+            self.user_repo.db.commit()
+            return user
+        except Exception as e:
+            # Rollback transaction if anything fails
+            self.user_repo.db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"User creation failed: {str(e)}"
+            )
 
     def login_user(self, email, password):
         user: User = self.user_repo.get_user_by_email(email)
