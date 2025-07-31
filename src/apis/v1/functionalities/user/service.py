@@ -52,7 +52,7 @@ class UserService:
             )
         try:
             user_data['password'] = hash_password(user_data['password'])
-            user= self.user_repo.create_user(user_data)
+            user: User= self.user_repo.create_user(user_data)
             if user_data['language'] == "English":
                  msg = MIMEText(
                     f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
@@ -73,7 +73,7 @@ class UserService:
                                f"تیم پشتیبانی برنامه یافتن محل شارژر")
                 self.send_email(user, msg)
             self.user_repo.db.commit()
-            return user
+            return self.get_user(user.user_id)
         except Exception as e:
             # Rollback transaction if anything fails
             self.user_repo.db.rollback()
