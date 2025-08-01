@@ -1,21 +1,13 @@
-import random
 import smtplib
-from datetime import datetime, timedelta
 from email.mime.text import MIMEText
-from pyexpat.errors import messages
-from typing import Optional
-
 from fastapi import HTTPException
 from httpx import Client
-from sqlalchemy import false
 from starlette import status
-
 from src.apis.v1.schemas.user import UpdateUserRequest
 from src.core.db_repository.user import UserRepositoryAbstract, UserRepository
 import bcrypt
 from src.config.base import BaseConfig, settings
 from src.core.models import User
-
 
 def hash_password(plain_password: str) -> str:
     salt = bcrypt.gensalt()
@@ -58,20 +50,21 @@ class UserService:
                     f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
                  self.send_email(user, msg)
             if user_data['language'] == "Farsi":
-                msg = MIMEText(f"سلام کاربر عزیز"
-                               f"\n"
-                               f"از ثبت نام شما در برنامه یافتن محل شارژر متشکریم"
-                               f"\n"
-                               f"برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:"
-                               f"\n"
-                               f"کد تایید:{user.email_verification_code}"
-                               f"\n"
-                               f"این کد فقط برای یک بار استفاده معتبر است"
-                               f"\n"
-                               f"با احترام،"
-                               f"\n"
-                               f"تیم پشتیبانی برنامه یافتن محل شارژر")
+                text = f"""
+                <div dir="rtl" style="text-align: right;">
+                سلام کاربر عزیز<br>
+                از ثبت نام شما در برنامه محل یافتن شارژر متشکریم<br>
+                برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:<br>
+               کد تایید:
+               { user.email_verification_code } <br>
+               این کد فقط برای یک بار استفاده معتبر است<br>
+                با احترام،<br>
+               تیم پشتیبانی برنامه یافتن محل شارژر<br>
+               </div>
+                """
+                msg = MIMEText(text, 'html')
                 self.send_email(user, msg)
+
             self.user_repo.db.commit()
             return self.get_user(user.user_id)
         except Exception as e:
@@ -100,20 +93,21 @@ class UserService:
                     f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
                 self.send_email(user, msg)
              if language == "Farsi":
-                msg = MIMEText(f"سلام کاربر عزیز"
-                               f"\n"
-                               f"از ثبت نام شما در برنامه یافتن محل شارژر متشکریم"
-                               f"\n"
-                               f"برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:"
-                               f"\n"
-                               f"کد تایید:{user.email_verification_code}"
-                               f"\n"
-                               f"این کد فقط برای یک بار استفاده معتبر است"
-                               f"\n"
-                               f"با احترام،"
-                               f"\n"
-                               f"تیم پشتیبانی برنامه یافتن محل شارژر")
-                self.send_email(user, msg)
+                 text = f"""
+                                <div dir="rtl" style="text-align: right;">
+                                سلام کاربر عزیز<br>
+                                از ثبت نام شما در برنامه محل یافتن شارژر متشکریم<br>
+                                برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:<br>
+                               کد تایید:
+                               {user.email_verification_code} <br>
+                               این کد فقط برای یک بار استفاده معتبر است<br>
+                                با احترام،<br>
+                               تیم پشتیبانی برنامه یافتن محل شارژر<br>
+                               </div>
+                                """
+                 msg = MIMEText(text, 'html')
+                 self.send_email(user, msg)
+
         return user
 
     def forgot_password(self, email_address: str, language: str) -> str:
@@ -124,20 +118,20 @@ class UserService:
                    f"Hello dear user\nThank you for registering in the Finding Charger Location app\nThe following verification code has been sent to you due to a forgotten password. Please use this code in the app to reset your password:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
                self.send_email(user, msg)
              if language == "Farsi":
-                msg = MIMEText(f"سلام کاربر عزیز"
-                               f"\n"
-                               f"از ثبت نام شما در برنامه یافتن محل شارژر متشکریم"
-                               f"\n"
-                               f"به دلیل فراموشی رمز عبور کد تایید زیر برای شما ارسال شده است، لطفاً از این کد در برنامه برای تنظیم مجدد رمز عبور استفاده کنید::"
-                               f"\n"
-                               f"کد تایید:{user.email_verification_code}"
-                               f"\n"
-                               f"این کد فقط برای یک بار استفاده معتبر است"
-                               f"\n"
-                               f"با احترام،"
-                               f"\n"
-                               f"تیم پشتیبانی برنامه یافتن محل شارژر")
-                self.send_email(user, msg)
+                 text = f"""
+                                <div dir="rtl" style="text-align: right;">
+                                سلام کاربر عزیز<br>
+                                از ثبت نام شما در برنامه محل یافتن شارژر متشکریم<br>
+                                به دلیل فراموشی رمز عبور کد تایید زیر برای شما ارسال شده است، لطفاً از این کد در برنامه برای تنظیم مجدد رمز عبور استفاده کنید:<br>
+                               کد تایید:
+                               {user.email_verification_code} <br>
+                               این کد فقط برای یک بار استفاده معتبر است<br>
+                                با احترام،<br>
+                               تیم پشتیبانی برنامه یافتن محل شارژر<br>
+                               </div>
+                                """
+                 msg = MIMEText(text, 'html')
+                 self.send_email(user, msg)
         return user
 
     def update_user(self,user_data: UpdateUserRequest, user_id: int):
