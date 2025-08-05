@@ -57,6 +57,30 @@ app.include_router(activity_router, tags=["activity router"])
 
 
 def run_migrations():
+    logger.info("=== Railway Environment Debug ===")
+
+    # Check all Railway-specific environment variables
+    railway_vars = {k: v for k, v in os.environ.items() if 'RAILWAY' in k.upper()}
+    logger.info(f"Railway env vars: {railway_vars}")
+
+    db_url = None
+    for var in possible_db_vars:
+        value = os.getenv(var)
+        if value:
+            logger.info(f"Found {var}: {value[:50]}...")
+            db_url = value
+            break
+
+    if not db_url:
+        logger.warning("No Railway database URL found, using default SQLite")
+        db_url = "sqlite:///database.db"
+
+    logger.info(f"Using DATABASE_URL: {db_url[:50]}...")
+    logger.info("=== End Railway Debug ===")
+
+    if db_url and "postgresql" in db_url:
+        settings.DATABASE_URL = db_url
+
     logger.info("=== Environment Debug ===")
     logger.info(f"RAILWAY_ENVIRONMENT: {os.getenv('RAILWAY_ENVIRONMENT', 'Not set')}")
     logger.info(f"DATABASE_URL from env: {os.getenv('DATABASE_URL', 'Not set')}")
