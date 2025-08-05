@@ -41,7 +41,7 @@ app.add_middleware(RequestHeadersMiddleware)
 app.add_middleware(LoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # In production, specify your app's origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -158,4 +158,7 @@ if __name__ == '__main__':
     logger.info("Starting FastAPI application...")
     logger.info(settings.HOST)
     logger.info(settings.PORT)
-    uvicorn.run("src.main:app", host=settings.HOST, port=settings.PORT, reload=False)
+    uvicorn.run("src.main:app",
+                host=settings.HOST,
+                port=settings.PORT,
+                reload=False)
