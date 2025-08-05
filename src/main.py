@@ -62,7 +62,13 @@ def run_migrations():
     # Check all Railway-specific environment variables
     railway_vars = {k: v for k, v in os.environ.items() if 'RAILWAY' in k.upper()}
     logger.info(f"Railway env vars: {railway_vars}")
-
+    # Check for Railway's PostgreSQL URL patterns
+    possible_db_vars = [
+        "DATABASE_URL",
+        "POSTGRES_URL",
+        "DB_URL",
+        "RAILWAY_DATABASE_URL"
+    ]
     db_url = None
     for var in possible_db_vars:
         value = os.getenv(var)

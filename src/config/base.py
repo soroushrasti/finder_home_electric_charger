@@ -17,7 +17,7 @@ class BaseConfig( BaseSettings):
     DATABASE_URL: str = Field(default="sqlite:///database.db")
 
     model_config = {
-        "env_file": None if os.getenv("RAILWAY_ENVIRONMENT") else ".env.base",
+        "env_file": None,  # Disable .env file loading on Railway
         "case_sensitive": False,
         "extra": "allow"
     }
