@@ -17,8 +17,8 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.drop_table('booking')
     op.drop_table('notification')
+    op.drop_table('booking')
 
 
 def downgrade() -> None:
