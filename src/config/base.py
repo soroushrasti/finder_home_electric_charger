@@ -6,7 +6,7 @@ class BaseConfig( BaseSettings):
     HOST: str = Field(default="0.0.0.0")
     PORT: int = Field(default=8080)
     DEBUG: str = Field(default="True")
-    TOKEN: str = Field(default="12345")
+    TOKEN: str = Field(default="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0LXVzZXIiLCJleHAiOjE2ODM2MzYwMDB9")
     EMAIL: str = Field(default="email")
     PASSWORD: str = Field(default="password")
     SMTP_SERVER: str = Field(default="smtp.gmail.com")
