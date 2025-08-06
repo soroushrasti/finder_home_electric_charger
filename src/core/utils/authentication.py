@@ -5,7 +5,6 @@ basis_token = os.getenv("TOKEN")
 
 
 def authenticate(x_api_token: str = Header(None)):
-    return "disabled"  # For testing
 
     if x_api_token != basis_token:
         raise HTTPException(
