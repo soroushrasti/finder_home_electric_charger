@@ -1,18 +1,16 @@
+from fastapi import Header, HTTPException, status
 import os
 
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-
-from src.config.base import BaseConfig, settings
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 basis_token = os.getenv("TOKEN")
-def authenticate(token: str = Depends(oauth2_scheme)):
-    return token
-    if token != basis_token:
+
+
+def authenticate(x_api_token: str = Header(None)):
+    if not x_api_token:
+        return "disabled"  # For testing
+
+    if x_api_token != basis_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
-            headers={"WWW-Authenticate": "Bearer"},
         )
-    return token
+    return x_api_token
