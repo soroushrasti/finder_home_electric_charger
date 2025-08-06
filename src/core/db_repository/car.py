@@ -2,7 +2,7 @@ from cmath import e
 from fastapi import HTTPException
 from sqlalchemy.sql.functions import func
 
-from src.apis.v1.schemas.car import FindCarRequest
+from src.apis.v1.schemas.car import FindCarRequest,UpdateCarRequest
 from src.core.models import Car
 from starlette import status
 
@@ -24,7 +24,7 @@ class CarRepository(CarRepositoryAbstract):
         self.db_session.commit()
         return new_car
 
-    def update_car(self, car_id: int, car_data: dict):
+    def update_car(self, car_id: int, car_data: UpdateCarRequest):
         # Logic to update an existing car in the database
         query = self.db_session.query(Car).filter(Car.car_id == car_id).first()
         if query:
