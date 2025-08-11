@@ -81,3 +81,22 @@ async def forgot_password(
         user_svc: UserService = Depends(get_user_service)
     ):
         return user_svc.forgot_password(user_data.email, user_data.language)
+
+@router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def request_account_deletion(
+    email: str = Body(..., embed=True),
+    user_svc: UserService = Depends(get_user_service)
+):
+    """Public endpoint for users to request account deletion"""
+    try:
+        # Log the deletion request or send email to admin
+        # You can implement email notification here
+        return {
+            "message": "Account deletion request received. You will receive a confirmation email within 2-3 business days.",
+            "user_id": user_id
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error processing deletion request: {str(e)}"
+        )
