@@ -82,9 +82,9 @@ async def forgot_password(
     ):
         return user_svc.forgot_password(user_data.email, user_data.language)
 
-@router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/users/{email}", status_code=status.HTTP_204_NO_CONTENT)
 async def request_account_deletion(
-    email: str = Body(..., embed=True),
+    email: str = Query(...),
     user_svc: UserService = Depends(get_user_service)
 ):
     """Public endpoint for users to request account deletion"""
