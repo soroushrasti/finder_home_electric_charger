@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 
 from src.apis.v1.schemas.user import UpdateUserRequest
-from src.core.models import User
+from src.core.models import User, Review, Car, ChargingLocation
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, Depends
 from starlette import status
@@ -127,4 +127,14 @@ class UserRepository(UserRepositoryAbstract):
                 status_code=status.HTTP_404_BAD_REQUEST,
                 detail=f"Error updating user: {str(e)}"
              )
+
+    def delete_user(self, email: str):
+        user = self.db.query(User).filter(User.email == email).first()
+        user_id = user.user_id
+        self.db.query(Review).filter(Review.user_id == user_id).delete()
+        self.db.query(Car).filter(Car.user_id == user_id).delete()
+        self.db.query(ChargingLocation).filter(ChargingLocation.user_id == user_id).delete()
+        self.db.query(User).filter(User.user_id == user_id).delete()
+        self.db.commit()
+
 

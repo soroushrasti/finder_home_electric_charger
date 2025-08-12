@@ -170,3 +170,6 @@ class UserService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Error sending sms: {str(e)}"
             )
+
+    def delete_user(self, email: str):
+        return self.user_repo.delete_user(email)
