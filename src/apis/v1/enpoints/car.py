@@ -56,5 +56,5 @@ async def update_car(
         car_id: int = Path(..., title="The Car ID"),
         car_svc: CarService = Depends(get_car_service)
 ):
-    updated_car = car_svc.update_car(car_data, car_id)
+    updated_car = car_svc.update_car(car_data=car_data, car_id=car_id)
     return updated_car

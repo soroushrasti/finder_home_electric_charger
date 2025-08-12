@@ -1,4 +1,4 @@
-from src.apis.v1.schemas.car import FindCarRequest
+from src.apis.v1.schemas.car import FindCarRequest, UpdateCarRequest
 from src.core.db_repository.car import CarRepositoryAbstract, CarRepository
 
 
@@ -16,5 +16,5 @@ class CarService:
     def find_car(self, find_car_data: FindCarRequest):
         return self.car_repo.find_car(find_car_data)
 
-    def update_car(self,car_data:dict,  car_id: int):
-        return self.car_repo.update_car(car_id, car_data)
+    def update_car(self,car_data:UpdateCarRequest,  car_id: int):
+        return self.car_repo.update_car(car_id=car_id, car_data=car_data)
