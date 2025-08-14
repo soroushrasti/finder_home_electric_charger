@@ -9,6 +9,7 @@ from src.apis.v1.schemas.booking import FindBookingRequest
 from src.core.models import Booking, User, ChargingLocation, Car, Pricing
 from starlette import status
 from sqlalchemy.orm import joinedload
+from datetime import timezone
 
 class BookingRepositoryAbstract:
     pass
@@ -105,7 +106,15 @@ class BookingRepository(BookingRepositoryAbstract):
             new_pricing.currency = charging_location.currency
 
             start_time = booking.start_time
-            duration = booking_data.end_time - start_time
+            end_time = booking_data.end_time
+
+            # Convert naive datetime to UTC if needed
+            if start_time.tzinfo is None:
+                start_time = start_time.replace(tzinfo=timezone.utc)
+            if end_time.tzinfo is None:
+                end_time = end_time.replace(tzinfo=timezone.utc)
+
+            duration = end_time - start_time
 
             # Convert duration to hours (assuming price_per_hour is numeric)
             duration_hours = duration.total_seconds() / 3600.0
