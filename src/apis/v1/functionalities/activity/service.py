@@ -1,5 +1,7 @@
 from itertools import count
 import select
+from typing import List
+
 from requests import Session
 from fastapi import Depends
 from src.apis.v1.schemas.activity import FindActivityRequest
@@ -12,8 +14,8 @@ class ActivityService:
         self.activity_repo = activity_repo
 
     def find_activity(self, find_activity_data: FindActivityRequest):
-
-       total_price = sum(self.activity_repo.calculate_total_pricing(find_activity_data))
+       pricing_data: List[Pricing] = self.activity_repo.get_all_pricings(find_activity_data)
+       total_price = sum(row.total_value for row in pricing_data if row.total_value is not None)
        number_bookings = len(self.activity_repo.calculate_number_bookings(find_activity_data))
        number_locations = len(self.activity_repo.calculate_number_locations(find_activity_data))
 

@@ -10,8 +10,8 @@ class ActivityRepository(ActivityRepositoryAbstract):
     def __init__(self, db_session):
         self.db_session = db_session
 
-    def calculate_total_pricing(self, find_activity_data: FindActivityRequest):
-        query =self.db_session.query(Pricing.total_value).join(Booking, Booking.booking_id == Pricing.booking_id)
+    def get_all_pricings(self, find_activity_data: FindActivityRequest):
+        query =self.db_session.query(Pricing).join(Booking, Booking.booking_id == Pricing.booking_id)
 
         if find_activity_data.car_owner_user_id:
             query = query.join(Car, Car.car_id ==  Booking.car_id).join(User, Car.user_id == User.user_id).filter(User.user_id == find_activity_data.car_owner_user_id)

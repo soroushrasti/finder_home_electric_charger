@@ -119,7 +119,7 @@ class BookingRepository(BookingRepositoryAbstract):
             # Convert duration to hours (assuming price_per_hour is numeric)
             duration_hours = duration.total_seconds() / 3600.0
             new_pricing.total_value = duration_hours * price_per_hour
-            new_pricing.price_per_kwh = None
+            new_pricing.price_per_kwh = charging_location.power_output
 
             self.db_session.add(new_pricing)
             self.db_session.commit()
