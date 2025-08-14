@@ -98,7 +98,7 @@ class BookingRepository(BookingRepositoryAbstract):
         charging_location: ChargingLocation = self.db_session.query(ChargingLocation).filter(
             ChargingLocation.charging_location_id == booking_data.charging_location_id).first()
         logging.info(f"calculate pricing for booking with booking end time: {booking.end_time} and start time: {booking.start_time}")
-        if not booking_data.end_time and not booking.start_time:
+        if not booking_data.end_time:
             new_pricing = Pricing()
             price_per_hour = charging_location.price_per_hour
             new_pricing.booking_id = booking.booking_id

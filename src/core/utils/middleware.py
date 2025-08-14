@@ -19,7 +19,6 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         body = await request.body()
         print("Request payload:", body.decode())
-        print("Request header:", request.headers)
 
         response = await call_next(request)
 
