@@ -36,7 +36,7 @@ class BookingRepository(BookingRepositoryAbstract):
         booking: Booking = self.db_session.query(Booking).filter(Booking.booking_id == booking_id).first()
 
         if booking:
-            booking_data.chargeing_location_id = booking_data.charging_location_id or booking.charging_location_id
+            booking_data.charging_location_id = booking_data.charging_location_id or booking.charging_location_id
             self.pricing_calculate(booking, booking_data)
             if booking_data.car_id :
              booking.car_id = booking_data.car_id
