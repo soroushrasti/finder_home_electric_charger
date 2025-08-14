@@ -93,14 +93,21 @@ class BookingRepository(BookingRepositoryAbstract):
 
         return query.all()
 
-    def pricing_calculate (self, booking:Booking, booking_data: UpdateBookingRequest):
-        charging_location: ChargingLocation = self.db_session.query(ChargingLocation).filter(ChargingLocation.charging_location_id == booking_data.charging_location_id).first()
-        if not booking.end_time and booking_data.end_time:
+    def pricing_calculate(self, booking: Booking, booking_data: UpdateBookingRequest):
+        charging_location: ChargingLocation = self.db_session.query(ChargingLocation).filter(
+            ChargingLocation.charging_location_id == booking_data.charging_location_id).first()
+        if not booking.end_time and not booking.start_time:
             new_pricing = Pricing()
             price_per_hour = charging_location.price_per_hour
             new_pricing.booking_id = booking.booking_id
             new_pricing.currency = charging_location.currency
-            new_pricing.total_value = (booking_data.end_time - booking_data.start_time) * price_per_hour
+
+            start_time = booking.start_time
+            duration = booking_data.end_time - start_time
+
+            # Convert duration to hours (assuming price_per_hour is numeric)
+            duration_hours = duration.total_seconds() / 3600
+            new_pricing.total_value = duration_hours * price_per_hour
             new_pricing.price_per_kwh = None
 
             self.db_session.add(new_pricing)
