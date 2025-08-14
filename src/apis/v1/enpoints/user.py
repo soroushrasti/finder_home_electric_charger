@@ -10,7 +10,6 @@ from src.core.utils.authentication import authenticate
 
 router = APIRouter(dependencies=[Depends(authenticate)])
 
-
 @router.get("/users/{user_id}")
 async def get_user(
     user_id: int = Path(..., title="The user ID"),
@@ -59,7 +58,7 @@ async def validate_user(
         return user_svc.validate_user(user_data.email_verification_code, user_data.phone_verification_code, user_data.user_id)
 
 
-@router.put("/update-user/{user_id}")
+@router.post("/update-user/{user_id}")
 async def update_user(
     user_data: UpdateUserRequest = Body(...),
     user_id: int = Path(..., title="The User ID"),
@@ -82,21 +81,11 @@ async def forgot_password(
     ):
         return user_svc.forgot_password(user_data.email, user_data.language)
 
-@router.delete("/users/{email}", status_code=status.HTTP_204_NO_CONTENT)
-async def request_account_deletion(
-    email: str = Path(..., description="User email address"),
+
+@router.post("/delete-user/{email}")
+async def delete_user(
+    email: str = Path(..., title="The Email Address"),
     user_svc: UserService = Depends(get_user_service)
 ):
-    """Public endpoint for users to request account deletion"""
-    try:
-        # Log the deletion request or send email to admin
-        # You can implement email notification here
-        return {
-            "message": "Account deletion request received. You will receive a confirmation email within 2-3 business days.",
-            "user_id": user_id
-        }
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Error processing deletion request: {str(e)}"
-        )
+    deleted_user = user_svc.delete_user(email)
+    return deleted_user
