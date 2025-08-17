@@ -26,6 +26,7 @@ class User(Base):
     phone_verification_code = Column(Text, nullable=True)
     expired_time_email_verification = Column(DateTime, nullable=True)
     expired_time_phone_verification = Column(DateTime, nullable=True)
+    country = Column(String(100), nullable=True)
 
 
 class Car(Base):
