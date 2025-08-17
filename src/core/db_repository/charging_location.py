@@ -58,9 +58,11 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
             if charging_location_data.currency:
                 query.currency = charging_location_data.currency
             if charging_location_data.latitude:
-                query.currency = charging_location_data.currency
-            if charging_location_data.currency:
-                query.currency = charging_location_data.currency
+                query.latitude = charging_location_data.latitude
+            if charging_location_data.longitude:
+                query.longitude = charging_location_data.longitude
+            if charging_location_data.country:
+                query.country = charging_location_data.country
             self.db_session.commit()
             return query
 

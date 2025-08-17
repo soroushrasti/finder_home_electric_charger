@@ -57,6 +57,7 @@ class ChargingLocation(Base):
     currency = Column(Text, nullable=True)
     latitude = Column(Numeric(10, 7), nullable=True)
     longitude = Column(Numeric(10, 7), nullable=True)
+    country = Column(String(100), nullable=True)
 
 
 class Booking(Base):

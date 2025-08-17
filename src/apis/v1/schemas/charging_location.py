@@ -16,6 +16,7 @@ class CreateChargingLocRequest(BaseModel):
     currency: Optional[str] = "Rials"
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    country: Optional[str] = None
 
 
     class Config:
@@ -60,6 +61,8 @@ class UpdateChargingLocRequest(BaseModel):
     power_output: Optional[float] = None  # in kW
     name: Optional[str] = None
     currency: Optional[str] = "Rials"
+    country: Optional[str] = None
+
 
 class FindNearbyChargingLocRequest(BaseModel):
     latitude: Optional[float] = None
