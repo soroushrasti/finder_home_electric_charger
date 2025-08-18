@@ -47,6 +47,14 @@ class FindChargingLocRequest(BaseModel):
         city :Optional[str] =None
         fast_charging :Optional[bool] =False
         user_id :Optional[int] =None
+        description: Optional[str] = None
+        price_per_hour: Optional[float] = None
+        power_output: Optional[float] = None  # in kW
+        name: Optional[str] = None
+        currency: Optional[str] = "Rials"
+        country: Optional[str] = None
+        latitude: Optional[float] = None
+        longitude: Optional[float] = None
 
 class UpdateChargingLocRequest(BaseModel):
     user_id: int
@@ -62,6 +70,8 @@ class UpdateChargingLocRequest(BaseModel):
     name: Optional[str] = None
     currency: Optional[str] = "Rials"
     country: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class FindNearbyChargingLocRequest(BaseModel):

@@ -38,7 +38,9 @@ class UserRepository(UserRepositoryAbstract):
             city_of_home=user_data.get('city_of_home'),
             postcode_of_home=user_data.get('postcode_of_home'),
             user_type=user_data.get('user_type'),
-            mobile_number=user_data.get('mobile_number')
+            mobile_number=user_data.get('mobile_number'),
+            country = user_data.get('country')
+
         )
         new_user.email_verification_code = random.randint(10000, 99999)
         new_user.phone_verification_code = random.randint(10000, 99999)
@@ -119,6 +121,8 @@ class UserRepository(UserRepositoryAbstract):
                     query.is_validated_email = user_data.is_validated_email
             if user_data.is_validated_phone_number:
                     query.is_validated_phone_number = user_data.is_validated_phone_number
+            if user_data.country:
+                    query.country = user_data.country
 
             self.db.commit()
             return query

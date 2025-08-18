@@ -93,6 +93,22 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
             query = query.filter(ChargingLocation.fast_charging == find_charging_location_data.fast_charging)
         if find_charging_location_data.user_id:
             query = query.filter(ChargingLocation.user_id == find_charging_location_data.user_id)
+        if find_charging_location_data.name:
+            query = query.filter(func.lower(ChargingLocation.name) == find_charging_location_data.name.lower())
+        if find_charging_location_data.description:
+            query = query.filter(func.lower(ChargingLocation.description) == find_charging_location_data.description.lower())
+        if find_charging_location_data.currency:
+            query = query.filter(func.lower(ChargingLocation.currency) == find_charging_location_data.currency.lower())
+        if find_charging_location_data.country:
+            query = query.filter(func.lower(ChargingLocation.country) == find_charging_location_data.country.lower())
+        if find_charging_location_data.price_per_hour:
+            query = query.filter(ChargingLocation.price_per_hour == find_charging_location_data.price_per_hour)
+        if find_charging_location_data.power_output:
+            query = query.filter(ChargingLocation.power_output == find_charging_location_data.power_output)
+        if find_charging_location_data.latitude:
+            query = query.filter(ChargingLocation.latitude == find_charging_location_data.latitude)
+        if find_charging_location_data.longitude:
+            query = query.filter(ChargingLocation.longitude == find_charging_location_data.longitude)
 
         return query.all()
 

@@ -26,6 +26,7 @@ class CreateUserRequest(BaseModel):
     user_type: Optional[UserType] = None
     mobile_number: Optional[str]  = None
     language: Optional[str] = "English"
+    country: Optional[str] = None
 
     @validator('username', pre=True, always=True)
     def set_username_from_email(cls, username, values):
@@ -68,3 +69,5 @@ class UpdateUserRequest(BaseModel):
     mobile_number: Optional[str] = None
     is_validated_email: Optional[bool] = False
     is_validated_phone_number: Optional[bool] = False
+    country: Optional[str] = None
+
