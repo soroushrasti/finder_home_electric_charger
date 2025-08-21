@@ -45,3 +45,10 @@ async def find_nearby_charging_loc(
     charging_loc_svc: ChargingLocService = Depends(get_charging_loc_service)
 ):
     return charging_loc_svc.find_nearby_charging_locs(charging_loc_data)
+
+@router.post("/delete-charging-location/{charging_location_id}")
+async def delete_charging_loc(
+        charging_location_id: int = Path(..., title="The Charging Location ID"),
+        charging_location_svc: ChargingLocService = Depends(get_charging_loc_service)
+):
+    return charging_location_svc.delete_charging_loc(charging_location_id)

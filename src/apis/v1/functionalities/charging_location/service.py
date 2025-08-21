@@ -19,6 +19,7 @@ class ChargingLocService:
         locations : List[ChargingLocation]= self.charging_loc_repo.find_charging_loc(charging_loc_data)
 
         for location in locations:
+            location.review_number = location.review_number + 1
             # if we have a booking and it has not ended, we set is_available to False
             booking: Optional[Booking] = self.charging_loc_repo.get_non_ended_booking_by_charging_location_id(location.charging_location_id)
             if booking:
@@ -44,3 +45,5 @@ class ChargingLocService:
                 location.is_available = True
         return locations
 
+    def delete_charging_loc(self, charging_location_id: int, ):
+         return self.charging_loc_repo.delete_charging_loc(charging_location_id)

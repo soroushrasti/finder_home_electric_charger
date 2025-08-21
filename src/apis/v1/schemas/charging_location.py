@@ -18,7 +18,6 @@ class CreateChargingLocRequest(BaseModel):
     longitude: Optional[float] = None
     country: Optional[str] = None
 
-
     class Config:
         allow_population_by_field_name = True
 
@@ -55,6 +54,7 @@ class FindChargingLocRequest(BaseModel):
         country: Optional[str] = None
         latitude: Optional[float] = None
         longitude: Optional[float] = None
+
 
 class UpdateChargingLocRequest(BaseModel):
     user_id: int
