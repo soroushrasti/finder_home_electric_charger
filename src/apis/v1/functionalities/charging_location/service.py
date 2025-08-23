@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from src.apis.v1.schemas.charging_location import FindNearbyChargingLocRequest, CreateChargingLocRequest
 from src.core.db_repository.charging_location import ChargingLocRepositoryAbstract, ChargingLocRepository
-from src.core.models import Booking, ChargingLocation
+from src.core.models import Booking, ChargingLocation, Review
 
 
 class ChargingLocService:
@@ -17,6 +17,7 @@ class ChargingLocService:
 
     def find_charging_locs(self, charging_loc_data):
         locations : List[ChargingLocation]= self.charging_loc_repo.find_charging_loc(charging_loc_data)
+        records = self.charging_loc_repo.review_statistics()
 
         for location in locations:
             # if we have a booking and it has not ended, we set is_available to False
@@ -25,6 +26,11 @@ class ChargingLocService:
                 location.is_available = False
             else:
                 location.is_available = True
+
+            for id, avg, count in records:
+                if id == location.charging_location_id:
+                    location.review_average = avg
+                    location.review_number = count
 
         return locations
 
@@ -44,3 +50,5 @@ class ChargingLocService:
                 location.is_available = True
         return locations
 
+    def delete_charging_loc(self, charging_location_id: int, ):
+         return self.charging_loc_repo.delete_charging_loc(charging_location_id)

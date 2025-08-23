@@ -54,6 +54,7 @@ class BookingRepository(BookingRepositoryAbstract):
              booking.review_message = booking_data.review_message
             if booking_data.status:
              booking.status = booking_data.status
+
             self.db_session.commit()
             return booking
 
