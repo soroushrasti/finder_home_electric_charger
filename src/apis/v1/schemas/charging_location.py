@@ -54,7 +54,8 @@ class FindChargingLocRequest(BaseModel):
         country: Optional[str] = None
         latitude: Optional[float] = None
         longitude: Optional[float] = None
-
+        review_number : Optional[int] = None
+        review_average: Optional[float] = None
 
 class UpdateChargingLocRequest(BaseModel):
     user_id: int

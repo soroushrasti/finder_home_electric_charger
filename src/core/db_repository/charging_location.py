@@ -5,7 +5,7 @@ from math import radians, sin, cos, atan2, sqrt
 
 from sqlalchemy.sql.functions import func
 
-from src.core.models import Booking, ChargingLocation, User
+from src.core.models import Booking, ChargingLocation, User, Review
 from src.apis.v1.schemas.charging_location import FindChargingLocRequest, FindNearbyChargingLocRequest, \
     CreateChargingLocRequest
 from starlette import status
@@ -112,7 +112,6 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         if find_charging_location_data.longitude:
             query = query.filter(ChargingLocation.longitude == find_charging_location_data.longitude)
 
-
         return query.all()
 
     def get_non_ended_booking_by_charging_location_id(self, charging_location_id: int):
@@ -139,3 +138,8 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
             c = 2 * atan2(sqrt(a), sqrt(1 - a))
             distance = radios * c
             return distance
+
+
+    def review_statistics(self):
+        query= self.db_session.query(ChargingLocation.charging_location_id, func.avg(Review.review_rate), func.count(Review.review_rate)).join(Review).group_by(ChargingLocation.charging_location_id)
+        return query.all()

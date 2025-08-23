@@ -1,5 +1,7 @@
+from typing import Any
+
 from src.apis.v1.schemas.activity import FindActivityRequest
-from src.core.models import Car, ChargingLocation, Pricing, Booking, User
+from src.core.models import Car, ChargingLocation, Pricing, Booking, User, Review
 
 
 class ActivityRepositoryAbstract:
@@ -30,7 +32,7 @@ class ActivityRepository(ActivityRepositoryAbstract):
 
         return query.all()
 
-    def calculate_number_locations(self, find_activity_data: FindActivityRequest):
+    def calculate_number_locations(self, find_activity_data: FindActivityRequest) -> Any:
         query =self.db_session.query(ChargingLocation.charging_location_id).join(User, User.user_id == ChargingLocation.user_id)
 
         if find_activity_data.car_owner_user_id:
