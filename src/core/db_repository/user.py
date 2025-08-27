@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 
@@ -44,7 +45,7 @@ class UserRepository(UserRepositoryAbstract):
         )
         new_user.email_verification_code = random.randint(10000, 99999)
         new_user.phone_verification_code = random.randint(10000, 99999)
-        new_user.expired_time_email_verification = datetime.now() + timedelta(minutes=15)
+        new_user.expired_time_email_verification = datetime.now() + timedelta(minutes=45)
 
         self.db.add(new_user)
 
@@ -62,7 +63,8 @@ class UserRepository(UserRepositoryAbstract):
 
     def validate_user(self, email_verification_code: str, phone_verification_code: str, user_id: int):
         user = self.db.query(User).filter(User.user_id == user_id).first()
-
+         # log all code and date
+        logging.info(f"email_verification_code: {email_verification_code}, user.email_verification_code: {user.email_verification_code}, current_time: {datetime.now()}, expired_time_email_verification: {user.expired_time_email_verification}")
         if email_verification_code and user.email_verification_code and user.email_verification_code == email_verification_code and (user.expired_time_email_verification >= datetime.now()):
               user.is_validated_email = True
               self.db.commit()
@@ -76,7 +78,7 @@ class UserRepository(UserRepositoryAbstract):
         else:
                raise HTTPException(
                    status_code=status.HTTP_401_UNAUTHORIZED,
-                   detail=f"cannot validated user: {str(e)}"
+                   detail=f"cannot validated user: email_verification_code is not correct or expired"
                 )
 
     def reset_password(self, email_address:str):
