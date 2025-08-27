@@ -21,6 +21,7 @@ class FindBookingRequest(BaseModel):
     review_message: Optional[str] =None
     status: Optional[str] =None
 
+
 class UpdateBookingRequest(BaseModel):
     car_id: Optional[int] =None
     charging_location_id: Optional[int] =None

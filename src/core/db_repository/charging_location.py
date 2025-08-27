@@ -5,7 +5,7 @@ from math import radians, sin, cos, atan2, sqrt
 
 from sqlalchemy.sql.functions import func
 
-from src.core.models import Booking, ChargingLocation, User
+from src.core.models import Booking, ChargingLocation, User, Review
 from src.apis.v1.schemas.charging_location import FindChargingLocRequest, FindNearbyChargingLocRequest, \
     CreateChargingLocRequest
 from starlette import status
@@ -63,6 +63,7 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
                 query.longitude = charging_location_data.longitude
             if charging_location_data.country:
                 query.country = charging_location_data.country
+
             self.db_session.commit()
             return query
 
@@ -74,7 +75,8 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
 
     def delete_charging_loc(self, charging_loc_id: int):
         # Logic to delete a charging location from the database
-        pass
+        self.db.query(ChargingLocation).filter(ChargingLocation.charging_location_id == charging_loc_id).delete()
+        self.db.commit()
 
     def find_charging_loc(self, find_charging_location_data: FindChargingLocRequest):
         query = self.db_session.query(ChargingLocation).join(User, User.user_id == ChargingLocation.user_id)
@@ -93,6 +95,22 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
             query = query.filter(ChargingLocation.fast_charging == find_charging_location_data.fast_charging)
         if find_charging_location_data.user_id:
             query = query.filter(ChargingLocation.user_id == find_charging_location_data.user_id)
+        if find_charging_location_data.name:
+            query = query.filter(func.lower(ChargingLocation.name) == find_charging_location_data.name.lower())
+        if find_charging_location_data.description:
+            query = query.filter(func.lower(ChargingLocation.description) == find_charging_location_data.description.lower())
+        if find_charging_location_data.currency:
+            query = query.filter(func.lower(ChargingLocation.currency) == find_charging_location_data.currency.lower())
+        if find_charging_location_data.country:
+            query = query.filter(func.lower(ChargingLocation.country) == find_charging_location_data.country.lower())
+        if find_charging_location_data.price_per_hour:
+            query = query.filter(ChargingLocation.price_per_hour == find_charging_location_data.price_per_hour)
+        if find_charging_location_data.power_output:
+            query = query.filter(ChargingLocation.power_output == find_charging_location_data.power_output)
+        if find_charging_location_data.latitude:
+            query = query.filter(ChargingLocation.latitude == find_charging_location_data.latitude)
+        if find_charging_location_data.longitude:
+            query = query.filter(ChargingLocation.longitude == find_charging_location_data.longitude)
 
         return query.all()
 
@@ -120,3 +138,8 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
             c = 2 * atan2(sqrt(a), sqrt(1 - a))
             distance = radios * c
             return distance
+
+
+    def review_statistics(self):
+        query= self.db_session.query(ChargingLocation.charging_location_id, func.avg(Review.review_rate), func.count(Review.review_rate)).join(Review).group_by(ChargingLocation.charging_location_id)
+        return query.all()
