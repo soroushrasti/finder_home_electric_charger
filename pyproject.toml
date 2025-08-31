@@ -20,6 +20,7 @@ pyjwt = {extras = ["crypto"], version = "^2.10.1"}
 alembic = "^1.16.1"
 pydantic = {extras = ["email"], version = "^2.11.7"}
 bcrypt = "^4.3.0"
+sendgrid = "^6.11.0"
 
 
 [build-system]

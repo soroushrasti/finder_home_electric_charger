@@ -15,6 +15,12 @@ class BaseConfig( BaseSettings):
     ACCOUNT_TOKEN: str = Field(default="account_token")
     TWILIO_NUMBER: str = Field(default="twilio_number")
     DATABASE_URL: str = Field(default="sqlite:///database.db")
+    # Email provider config
+    EMAIL_PROVIDER: str = Field(default="smtp")  # options: smtp, sendgrid
+    SENDGRID_API_KEY: str = Field(default="")
+    SENDGRID_SENDER: str = Field(default="")
+    EMAIL_ENABLED: bool = Field(default=True)
+    EMAIL_STRICT: bool = Field(default=False)
 
     model_config = {
         "env_file": None,  # Disable .env file loading on Railway

@@ -4,11 +4,13 @@ from fastapi import HTTPException
 from httpx import Client
 from starlette import status
 from src.apis.v1.schemas.user import UpdateUserRequest
-from src.core.db_repository.user import UserRepositoryAbstract, UserRepository
+from src.core.db_repository.user import UserRepository
 import bcrypt
-from src.config.base import BaseConfig, settings
+from src.config.base import settings
 from src.core.models import User
 import logging
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # Initialize module logger
 logger = logging.getLogger(__name__)
@@ -68,48 +70,61 @@ class UserService:
             user_data['password'] = hash_password(user_data['password'])
             user: User = self.user_repo.create_user(user_data)
             logger.info("User created in DB: id=%s email=%s", getattr(user, 'user_id', None), getattr(user, 'email', None))
-
-            # Email selection based on language
-            if user_data['language'] == "English":
-                logger.info(
-                    "Preparing English verification email for user_id=%s email=%s",
-                    getattr(user, 'user_id', None), getattr(user, 'email', None)
-                )
-                msg = MIMEText(
-                    f"Hello {user.first_name} {user.last_name}\nThank you for registering in the BridgeEnergy app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team"
-                )
-                self.send_email(user, msg)
-            if user_data['language'] == "Farsi":
-                logger.info(
-                    "Preparing Farsi verification email for user_id=%s email=%s",
-                    getattr(user, 'user_id', None), getattr(user, 'email', None)
-                )
-                text = f"""
-                <div dir="rtl" style="text-align: right;">
-                سلام کاربر عزیز<br>
-                از ثبت نام شما در برنامه محل یافتن شارژر متشکریم<br>
-                برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:<br>
-               کد تایید:
-               { user.email_verification_code } <br>
-               این کد فقط برای یک بار استفاده معتبر است<br>
-                با احترام،<br>
-               تیم پشتیبانی برنامه یافتن محل شارژر<br>
-               </div>
-                """
-                msg = MIMEText(text, 'html')
-                self.send_email(user, msg)
-
+            # Commit user before attempting to send email so email failures don't roll back user creation
             self.user_repo.db.commit()
-            logger.info("User creation flow completed successfully for user_id=%s", getattr(user, 'user_id', None))
-            return self.get_user(user.user_id)
+            logger.info("User committed to DB: id=%s", getattr(user, 'user_id', None))
         except Exception as e:
-            # Rollback transaction if anything fails
-            logger.exception("User creation failed, rolling back transaction")
+            logger.exception("User creation failed during DB operations, rolling back transaction")
             self.user_repo.db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"User creation failed: {str(e)}"
             )
+
+        # Email selection based on language (non-fatal)
+        if getattr(settings, 'EMAIL_ENABLED', True):
+            try:
+                if user_data['language'] == "English":
+                    logger.info(
+                        "Preparing English verification email for user_id=%s email=%s",
+                        getattr(user, 'user_id', None), getattr(user, 'email', None)
+                    )
+                    msg = MIMEText(
+                        f"Hello {user.first_name} {user.last_name}\nThank you for registering in the BridgeEnergy app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team"
+                    )
+                    self.send_email(user, msg)
+                if user_data['language'] == "Farsi":
+                    logger.info(
+                        "Preparing Farsi verification email for user_id=%s email=%s",
+                        getattr(user, 'user_id', None), getattr(user, 'email', None)
+                    )
+                    text = f"""
+                    <div dir="rtl" style="text-align: right;">
+                    سلام کاربر عزیز<br>
+                    از ثبت نام شما در برنامه محل یافتن شارژر متشکریم<br>
+                    برای تایید حساب کاربری خود در برنامه، لطفاً از کد تایید زیر استفاده کنید:<br>
+                   کد تایید:
+                   { user.email_verification_code } <br>
+                   این کد فقط برای یک بار استفاده معتبر است<br>
+                    با احترام،<br>
+                   تیم پشتیبانی برنامه یافتن محل شارژر<br>
+                   </div>
+                    """
+                    msg = MIMEText(text, 'html')
+                    self.send_email(user, msg)
+            except Exception as e:
+                logger.exception("Non-fatal: failed to send verification email for user_id=%s", getattr(user, 'user_id', None))
+                # Optionally enforce strict mode
+                if getattr(settings, 'EMAIL_STRICT', False):
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"User created but email failed: {str(e)}"
+                    )
+        else:
+            logger.info("EMAIL_ENABLED is False; skipping sending verification email")
+
+        logger.info("User creation flow completed successfully for user_id=%s", getattr(user, 'user_id', None))
+        return self.get_user(user.user_id)
 
     def login_user(self, email, password):
         user: User = self.user_repo.get_user_by_email(email)
@@ -192,17 +207,73 @@ class UserService:
             user_data.password = None
         return self.user_repo.update_user(user_id, user_data)
 
+    def _send_email_sendgrid(self, to_email: str, subject: str, content: str, content_type: str = "text/plain"):
+        logger.info("Sending email via SendGrid to=%s", to_email)
+        api_key = getattr(settings, 'SENDGRID_API_KEY', '')
+        sender = getattr(settings, 'SENDGRID_SENDER', '')
+        if not api_key or not sender:
+            logger.error("SendGrid config missing: SENDGRID_API_KEY or SENDGRID_SENDER")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Email service not configured")
+
+        # Build message using official SDK
+        if content_type == "text/html":
+            message = Mail(from_email=sender, to_emails=to_email, subject=subject, html_content=content)
+        else:
+            message = Mail(from_email=sender, to_emails=to_email, subject=subject, plain_text_content=content)
+
+        try:
+            sg = SendGridAPIClient(api_key)
+            # If you use EU regional subuser uncomment the next line and set residency
+            # sg.set_sendgrid_data_residency("eu")
+            response = sg.send(message)
+            status_code = getattr(response, 'status_code', None)
+            body = getattr(response, 'body', b'')
+            headers = getattr(response, 'headers', {})
+            logger.info("SendGrid response: status=%s", status_code)
+            logger.debug("SendGrid headers=%s body=%s", headers, body)
+            if status_code not in (200, 202):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error sending email: {body}")
+        except Exception as e:
+            logger.exception("SendGrid send exception")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error sending email: {str(e)}")
+
     def send_email(self, user: User, message: MIMEText):
+        # Branch by provider
+        provider = str(getattr(settings, 'EMAIL_PROVIDER', 'smtp')).lower()
+        subject = "BridgeEnergy email verification code"
+        # Extract body and type from MIMEText
+        subtype = message.get_content_subtype()  # 'plain' or 'html'
+        try:
+            body_bytes = message.get_payload(decode=True)
+            body = body_bytes.decode('utf-8') if isinstance(body_bytes, (bytes, bytearray)) else (body_bytes or "")
+        except Exception:
+            body = message.get_payload() or ""
+        content_type = "text/html" if subtype == 'html' else "text/plain"
+
+        if provider == 'sendgrid':
+            self._send_email_sendgrid(user.email, subject, body, content_type)
+            return
+
+        # Default SMTP path
         msg = message
-        msg["Subject"] = "BridgeEnergy email verification code"
+        msg["Subject"] = subject
         msg["From"] = settings.EMAIL
         msg["To"] = user.email
+        # Resolve SMTP host for better diagnostics
+        try:
+            import socket
+            addrs = socket.getaddrinfo(settings.SMTP_SERVER, None)
+            ips = sorted({a[4][0] for a in addrs})
+            logger.debug("SMTP DNS resolution: %s -> %s", settings.SMTP_SERVER, ips)
+        except Exception:
+            logger.exception("Failed to resolve SMTP host: %s", getattr(settings, 'SMTP_SERVER', None))
+        port = int(getattr(settings, 'SMTP_PORT', 587))
         logger.info(
             "Attempting to send email: to=%s via %s:%s",
-            user.email, getattr(settings, 'SMTP_SERVER', None), getattr(settings, 'SMTP_PORT', None)
+            user.email, getattr(settings, 'SMTP_SERVER', None), port
         )
         try:
-            with smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT) as server:
+            with smtplib.SMTP(settings.SMTP_SERVER, port, timeout=10) as server:
                 logger.debug("SMTP connection established, starting TLS")
                 server.starttls()
                 logger.debug("Logging into SMTP as %s", settings.EMAIL)
@@ -213,7 +284,7 @@ class UserService:
         except Exception as e:
             logger.exception(
                 "Error sending email to %s via %s:%s",
-                user.email, getattr(settings, 'SMTP_SERVER', None), getattr(settings, 'SMTP_PORT', None)
+                user.email, getattr(settings, 'SMTP_SERVER', None), port
             )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
