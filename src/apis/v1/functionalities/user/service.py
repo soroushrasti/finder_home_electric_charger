@@ -47,7 +47,7 @@ class UserService:
             user: User= self.user_repo.create_user(user_data)
             if user_data['language'] == "English":
                  msg = MIMEText(
-                    f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
+                    f"Hello {user.first_name} {user.last_name}\nThank you for registering in the BridgeEnergy app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team")
                  self.send_email(user, msg)
             if user_data['language'] == "Farsi":
                 text = f"""
@@ -90,7 +90,7 @@ class UserService:
         if user:
              if language == "English":
                 msg = MIMEText(
-                    f"Hello dear user\nThank you for registering in the Finding Charger Location app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
+                    f"Hello {user.first_name} {user.last_name}\nThank you for registering in the BridgeEnergy app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team")
                 self.send_email(user, msg)
              if language == "Farsi":
                  text = f"""
@@ -115,7 +115,7 @@ class UserService:
         if user:
              if language == "English":
                msg = MIMEText(
-                   f"Hello dear user\nThank you for registering in the Finding Charger Location app\nThe following verification code has been sent to you due to a forgotten password. Please use this code in the app to reset your password:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nFinding Charger Location app Support Team")
+                   f"Hello {user.first_name} {user.last_name}\nThank you for registering in the BridgeEnergy app\nThe following verification code has been sent to you due to a forgotten password. Please use this code in the app to reset your password:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team")
                self.send_email(user, msg)
              if language == "Farsi":
                  text = f"""
@@ -144,7 +144,7 @@ class UserService:
 
     def send_email(self, user: User, message:str):
         msg = message
-        msg["Subject"] = "email verification code"
+        msg["Subject"] = "BridgeEnergy email verification code"
         msg["From"] = settings.EMAIL
         msg["To"] = user.email
         try:
