@@ -20,12 +20,6 @@ class BaseConfig( BaseSettings):
     POSTMARK_SERVER_TOKEN: str = Field(default="")
     POSTMARK_SENDER: str = Field(default="")
     POSTMARK_MESSAGE_STREAM: str = Field(default="outbound")
-    # Legacy (no longer used) SendGrid fields kept for compatibility
-    SENDGRID_API_KEY: str = Field(default="")
-    SENDGRID_SENDER: str = Field(default="")
-    EMAIL_ENABLED: bool = Field(default=True)
-    EMAIL_STRICT: bool = Field(default=False)
-
     model_config = {
         "env_file": None,  # Disable .env file loading on Railway
         "case_sensitive": False,
