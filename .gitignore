@@ -164,4 +164,4 @@ cython_debug/
 .project
 .pydevproject
 src/database.db
-!/.env.base
+.env.base

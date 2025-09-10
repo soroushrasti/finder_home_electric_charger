@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field
-import os
 
 class BaseConfig( BaseSettings):
     HOST: str = Field(default="0.0.0.0")
@@ -15,7 +14,12 @@ class BaseConfig( BaseSettings):
     ACCOUNT_TOKEN: str = Field(default="account_token")
     TWILIO_NUMBER: str = Field(default="twilio_number")
     DATABASE_URL: str = Field(default="sqlite:///database.db")
-
+    # Email provider config
+    EMAIL_PROVIDER: str = Field(default="postmark")  # options: smtp, postmark
+    # Postmark settings
+    POSTMARK_SERVER_TOKEN: str = Field(default="")
+    POSTMARK_SENDER: str = Field(default="")
+    POSTMARK_MESSAGE_STREAM: str = Field(default="outbound")
     model_config = {
         "env_file": None,  # Disable .env file loading on Railway
         "case_sensitive": False,
