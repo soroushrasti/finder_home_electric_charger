@@ -9,8 +9,6 @@ import bcrypt
 from src.config.base import settings
 from src.core.models import User
 import logging
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 
 # Initialize module logger
 logger = logging.getLogger(__name__)
@@ -90,7 +88,7 @@ class UserService:
                         getattr(user, 'user_id', None), getattr(user, 'email', None)
                     )
                     msg = MIMEText(
-                        f"Hello {user.first_name} {user.last_name}\nThank you for registering in the BridgeEnergy app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team"
+                        f"Hello {user.first_name} {user.last_name if user.last_name else ''}\nThank you for registering in the BridgeEnergy app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team"
                     )
                     self.send_email(user, msg)
                 if user_data['language'] == "Farsi":
@@ -144,7 +142,7 @@ class UserService:
                 if language == "English":
                     logger.info("Sending English verification email (resend) to %s", user.email)
                     msg = MIMEText(
-                        f"Hello {user.first_name} {user.last_name}\nThank you for registering in the BridgeEnergy app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team"
+                        f"Hello {user.first_name} {user.last_name if user.last_name else ''}\nThank you for registering in the BridgeEnergy app\nTo verify your account in the app, please use the following verification code:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team"
                     )
                     self.send_email(user, msg)
                 if language == "Farsi":
@@ -176,7 +174,7 @@ class UserService:
                 if language == "English":
                     logger.info("Sending English forgot-password email to %s", user.email)
                     msg = MIMEText(
-                        f"Hello {user.first_name} {user.last_name}\nThank you for registering in the BridgeEnergy app\nThe following verification code has been sent to you due to a forgotten password. Please use this code in the app to reset your password:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team"
+                        f"Hello {user.first_name} {user.last_name if user.last_name else ''}\nThank you for registering in the BridgeEnergy app\nThe following verification code has been sent to you due to a forgotten password. Please use this code in the app to reset your password:\nVerification code:{user.email_verification_code}\nThis code is valid for one-time use only\nRegards,\nBridgeEnergy app Support Team"
                     )
                     self.send_email(user, msg)
                 if language == "Farsi":
@@ -207,34 +205,46 @@ class UserService:
             user_data.password = None
         return self.user_repo.update_user(user_id, user_data)
 
-    def _send_email_sendgrid(self, to_email: str, subject: str, content: str, content_type: str = "text/plain"):
-        logger.info("Sending email via SendGrid to=%s", to_email)
-        api_key = getattr(settings, 'SENDGRID_API_KEY', '')
-        sender = getattr(settings, 'SENDGRID_SENDER', '')
-        if not api_key or not sender:
-            logger.error("SendGrid config missing: SENDGRID_API_KEY or SENDGRID_SENDER")
+    def _send_email_postmark(self, to_email: str, subject: str, content: str, content_type: str = "text/plain"):
+        logger.info("Sending email via Postmark to=%s", to_email)
+        token = getattr(settings, 'POSTMARK_SERVER_TOKEN', '')
+        sender = getattr(settings, 'POSTMARK_SENDER', '')
+        stream = getattr(settings, 'POSTMARK_MESSAGE_STREAM', 'outbound')
+        if not token or not sender:
+            logger.error("Postmark config missing: POSTMARK_SERVER_TOKEN or POSTMARK_SENDER")
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Email service not configured")
 
-        # Build message using official SDK
+        url = "https://api.postmarkapp.com/email"
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "X-Postmark-Server-Token": token,
+        }
+        payload = {
+            "From": sender,
+            "To": to_email,
+            "Subject": subject,
+            "MessageStream": stream,
+        }
         if content_type == "text/html":
-            message = Mail(from_email=sender, to_emails=to_email, subject=subject, html_content=content)
+            payload["HtmlBody"] = content
         else:
-            message = Mail(from_email=sender, to_emails=to_email, subject=subject, plain_text_content=content)
+            payload["TextBody"] = content
 
         try:
-            sg = SendGridAPIClient(api_key)
-            # If you use EU regional subuser uncomment the next line and set residency
-            # sg.set_sendgrid_data_residency("eu")
-            response = sg.send(message)
-            status_code = getattr(response, 'status_code', None)
-            body = getattr(response, 'body', b'')
-            headers = getattr(response, 'headers', {})
-            logger.info("SendGrid response: status=%s", status_code)
-            logger.debug("SendGrid headers=%s body=%s", headers, body)
-            if status_code not in (200, 202):
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error sending email: {body}")
+            with Client(timeout=10.0) as client:
+                resp = client.post(url, headers=headers, json=payload)
+            logger.info("Postmark response: status=%s", resp.status_code)
+            if resp.status_code >= 400:
+                try:
+                    detail = resp.json()
+                except Exception:
+                    detail = resp.text
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error sending email: {detail}")
+        except HTTPException:
+            raise
         except Exception as e:
-            logger.exception("SendGrid send exception")
+            logger.exception("Postmark send exception")
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error sending email: {str(e)}")
 
     def send_email(self, user: User, message: MIMEText):
@@ -250,8 +260,8 @@ class UserService:
             body = message.get_payload() or ""
         content_type = "text/html" if subtype == 'html' else "text/plain"
 
-        if provider == 'sendgrid':
-            self._send_email_sendgrid(user.email, subject, body, content_type)
+        if provider == 'postmark':
+            self._send_email_postmark(user.email, subject, body, content_type)
             return
 
         # Default SMTP path

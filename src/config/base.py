@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field
-import os
 
 class BaseConfig( BaseSettings):
     HOST: str = Field(default="0.0.0.0")
@@ -16,7 +15,12 @@ class BaseConfig( BaseSettings):
     TWILIO_NUMBER: str = Field(default="twilio_number")
     DATABASE_URL: str = Field(default="sqlite:///database.db")
     # Email provider config
-    EMAIL_PROVIDER: str = Field(default="smtp")  # options: smtp, sendgrid
+    EMAIL_PROVIDER: str = Field(default="postmark")  # options: smtp, postmark
+    # Postmark settings
+    POSTMARK_SERVER_TOKEN: str = Field(default="")
+    POSTMARK_SENDER: str = Field(default="")
+    POSTMARK_MESSAGE_STREAM: str = Field(default="outbound")
+    # Legacy (no longer used) SendGrid fields kept for compatibility
     SENDGRID_API_KEY: str = Field(default="")
     SENDGRID_SENDER: str = Field(default="")
     EMAIL_ENABLED: bool = Field(default=True)
