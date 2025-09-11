@@ -37,7 +37,8 @@ async def update_charging_loc(
     charging_location_id: int = Path(..., title="The Charging Location ID"),
     charging_location_svc: ChargingLocService = Depends(get_charging_loc_service)
 ):
-    update_charging_loc = charging_location_svc.update_charging_loc(charging_location_data, charging_location_id)
+    updated = charging_location_svc.update_charging_loc(charging_location_data, charging_location_id)
+    return updated
 
 @router.post("/find-nearby-charging-locations", status_code=status.HTTP_200_OK)
 async def find_nearby_charging_loc(

@@ -7,7 +7,7 @@ from sqlalchemy.sql.functions import func
 
 from src.core.models import Booking, ChargingLocation, User, Review
 from src.apis.v1.schemas.charging_location import FindChargingLocRequest, FindNearbyChargingLocRequest, \
-    CreateChargingLocRequest
+    CreateChargingLocRequest, UpdateChargingLocRequest
 from starlette import status
 from cmath import e
 
@@ -28,94 +28,88 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
         self.db_session.commit()
         return new_charging_loc
 
-    def update_charging_loc(self, charging_location_id: int, charging_location_data: dict):
-        # Logic to update an existing charging location in the database
+    def update_charging_loc(self, charging_location_id: int, charging_location_data: UpdateChargingLocRequest):
         query: ChargingLocation = self.db_session.query(ChargingLocation).filter(
             ChargingLocation.charging_location_id == charging_location_id).first()
         if query:
-            if charging_location_data.user_id:
+            if charging_location_data.user_id is not None:
                 query.user_id = charging_location_data.user_id
-            if charging_location_data.post_code:
+            if charging_location_data.post_code is not None:
                 query.post_code = charging_location_data.post_code
-            if charging_location_data.alley:
+            if charging_location_data.alley is not None:
                 query.alley = charging_location_data.alley
-            if charging_location_data.street:
+            if charging_location_data.street is not None:
                 query.street = charging_location_data.street
-            if charging_location_data.home_phone_number:
+            if charging_location_data.home_phone_number is not None:
                 query.home_phone_number = charging_location_data.home_phone_number
-            if charging_location_data.city:
+            if charging_location_data.city is not None:
                 query.city = charging_location_data.city
-            if charging_location_data.fast_charging:
+            if charging_location_data.fast_charging is not None:
                 query.fast_charging = charging_location_data.fast_charging
-            if charging_location_data.name:
+            if charging_location_data.name is not None:
                 query.name = charging_location_data.name
-            if charging_location_data.price_per_hour:
+            if charging_location_data.price_per_hour is not None:
                 query.price_per_hour = charging_location_data.price_per_hour
-            if charging_location_data.power_output:
+            if charging_location_data.power_output is not None:
                 query.power_output = charging_location_data.power_output
-            if charging_location_data.description:
+            if charging_location_data.description is not None:
                 query.description = charging_location_data.description
-            if charging_location_data.currency:
+            if charging_location_data.currency is not None:
                 query.currency = charging_location_data.currency
-            if charging_location_data.latitude:
+            if charging_location_data.latitude is not None:
                 query.latitude = charging_location_data.latitude
-            if charging_location_data.longitude:
+            if charging_location_data.longitude is not None:
                 query.longitude = charging_location_data.longitude
-            if charging_location_data.country:
+            if charging_location_data.country is not None:
                 query.country = charging_location_data.country
             if charging_location_data.has_accommodation is not None:
                 query.has_accommodation = charging_location_data.has_accommodation
-
             self.db_session.commit()
+            self.db_session.refresh(query)
             return query
-
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_404_BAD_REQUEST,
-                detail=f"Error updating charging location{(e)}"
-            )
+        raise HTTPException(
+            status_code=status.HTTP_404_BAD_REQUEST,
+            detail=f"Error updating charging location{(e)}"
+        )
 
     def delete_charging_loc(self, charging_loc_id: int):
-        # Logic to delete a charging location from the database
         self.db_session.query(ChargingLocation).filter(ChargingLocation.charging_location_id == charging_loc_id).delete()
         self.db_session.commit()
 
     def find_charging_loc(self, find_charging_location_data: FindChargingLocRequest):
         query = self.db_session.query(ChargingLocation).join(User, User.user_id == ChargingLocation.user_id)
-
-        if find_charging_location_data.post_code:
+        if find_charging_location_data.post_code is not None:
             query = query.filter(func.lower(ChargingLocation.post_code) == find_charging_location_data.post_code.lower())
-        if find_charging_location_data.alley:
+        if find_charging_location_data.alley is not None:
             query = query.filter(func.lower(ChargingLocation.alley) == find_charging_location_data.alley.lower())
-        if find_charging_location_data.street:
+        if find_charging_location_data.street is not None:
             query = query.filter(func.lower(ChargingLocation.street) == find_charging_location_data.street.lower())
-        if find_charging_location_data.home_phone_number:
+        if find_charging_location_data.home_phone_number is not None:
             query = query.filter(func.lower(ChargingLocation.home_phone_number) == find_charging_location_data.home_phone_number.lower())
-        if find_charging_location_data.city:
+        if find_charging_location_data.city is not None:
             query = query.filter(func.lower(ChargingLocation.city) == find_charging_location_data.city.lower())
-        if find_charging_location_data.fast_charging:
+        if find_charging_location_data.fast_charging is not None:
             query = query.filter(ChargingLocation.fast_charging == find_charging_location_data.fast_charging)
-        if find_charging_location_data.user_id:
+        if find_charging_location_data.user_id is not None:
             query = query.filter(ChargingLocation.user_id == find_charging_location_data.user_id)
-        if find_charging_location_data.name:
+        if find_charging_location_data.name is not None:
             query = query.filter(func.lower(ChargingLocation.name) == find_charging_location_data.name.lower())
-        if find_charging_location_data.description:
+        if find_charging_location_data.description is not None:
             query = query.filter(func.lower(ChargingLocation.description) == find_charging_location_data.description.lower())
-        if find_charging_location_data.currency:
+        if find_charging_location_data.currency is not None:
             query = query.filter(func.lower(ChargingLocation.currency) == find_charging_location_data.currency.lower())
-        if find_charging_location_data.country:
+        if find_charging_location_data.country is not None:
             query = query.filter(func.lower(ChargingLocation.country) == find_charging_location_data.country.lower())
-        if find_charging_location_data.price_per_hour:
+        if find_charging_location_data.price_per_hour is not None:
             query = query.filter(ChargingLocation.price_per_hour == find_charging_location_data.price_per_hour)
-        if find_charging_location_data.power_output:
+        if find_charging_location_data.power_output is not None:
             query = query.filter(ChargingLocation.power_output == find_charging_location_data.power_output)
-        if find_charging_location_data.latitude:
+        if find_charging_location_data.latitude is not None:
             query = query.filter(ChargingLocation.latitude == find_charging_location_data.latitude)
-        if find_charging_location_data.longitude:
+        if find_charging_location_data.longitude is not None:
             query = query.filter(ChargingLocation.longitude == find_charging_location_data.longitude)
         if find_charging_location_data.has_accommodation is not None:
             query = query.filter(ChargingLocation.has_accommodation == find_charging_location_data.has_accommodation)
-
         return query.all()
 
     def get_non_ended_booking_by_charging_location_id(self, charging_location_id: int):

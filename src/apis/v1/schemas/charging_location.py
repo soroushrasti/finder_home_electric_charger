@@ -3,12 +3,12 @@ from pydantic import BaseModel, Field
 
 class CreateChargingLocRequest(BaseModel):
     user_id: int
-    post_code: Optional[str] = None
+    post_code: Optional[str] = Field(default=None, alias="postcode")
     city: Optional[str] = None
     alley: Optional[str] = None
     street: Optional[str] = None
-    home_phone_number: Optional[str] = None
-    fast_charging: Optional[bool] = False  # Fast charging option as a boolean
+    home_phone_number: Optional[str] = Field(default=None, alias="phone_number")
+    fast_charging: Optional[bool] = Field(default=False, alias="fast_charging")
     description: Optional[str] = None
     price_per_hour: Optional[float] = None
     power_output: Optional[float] = None  # in kW
@@ -21,6 +21,8 @@ class CreateChargingLocRequest(BaseModel):
 
     class Config:
         allow_population_by_field_name = True
+        populate_by_name = True
+        protected_namespaces = ()
 
 
 from pydantic import BaseModel, Field
@@ -40,12 +42,12 @@ class ChargingLocResponse(BaseModel):
         populate_by_name = True
 
 class FindChargingLocRequest(BaseModel):
-        post_code :Optional[str] =None
+        post_code :Optional[str] = Field(default=None, alias="postcode")
         alley:Optional[str] =None
         street :Optional[str] =None
-        home_phone_number :Optional[str] =None
+        home_phone_number :Optional[str] = Field(default=None, alias="phone_number")
         city :Optional[str] =None
-        fast_charging :Optional[bool] =False
+        fast_charging :Optional[bool] = Field(default=False, alias="fast_charging")
         user_id :Optional[int] =None
         description: Optional[str] = None
         price_per_hour: Optional[float] = None
@@ -59,14 +61,19 @@ class FindChargingLocRequest(BaseModel):
         review_average: Optional[float] = None
         has_accommodation: Optional[bool] = None
 
+        class Config:
+            allow_population_by_field_name = True
+            populate_by_name = True
+            protected_namespaces = ()
+
 class UpdateChargingLocRequest(BaseModel):
     user_id: int
-    post_code: Optional[str] = None
+    post_code: Optional[str] = Field(default=None, alias="postcode")
     city: Optional[str] = None
     alley: Optional[str] = None
     street: Optional[str] = None
-    home_phone_number: Optional[str] = None
-    fast_charging: Optional[bool] = False  # Fast charging option as a boolean
+    home_phone_number: Optional[str] = Field(default=None, alias="phone_number")
+    fast_charging: Optional[bool] = Field(default=False, alias="fast_charging")
     description: Optional[str] = None
     price_per_hour: Optional[float] = None
     power_output: Optional[float] = None  # in kW
@@ -77,6 +84,10 @@ class UpdateChargingLocRequest(BaseModel):
     longitude: Optional[float] = None
     has_accommodation: Optional[bool] = None
 
+    class Config:
+        allow_population_by_field_name = True
+        populate_by_name = True
+        protected_namespaces = ()
 
 class FindNearbyChargingLocRequest(BaseModel):
     latitude: Optional[float] = None
