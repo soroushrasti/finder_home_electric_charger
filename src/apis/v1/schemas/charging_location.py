@@ -47,7 +47,7 @@ class FindChargingLocRequest(BaseModel):
         street :Optional[str] =None
         home_phone_number :Optional[str] = Field(default=None, alias="phone_number")
         city :Optional[str] =None
-        fast_charging :Optional[bool] = Field(default=False, alias="fast_charging")
+        fast_charging :Optional[bool] = Field(default=None, alias="fast_charging")
         user_id :Optional[int] =None
         description: Optional[str] = None
         price_per_hour: Optional[float] = None
