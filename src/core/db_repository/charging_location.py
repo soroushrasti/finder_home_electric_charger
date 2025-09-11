@@ -143,3 +143,11 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
     def review_statistics(self):
         query= self.db_session.query(ChargingLocation.charging_location_id, func.avg(Review.review_rate), func.count(Review.review_rate)).join(Review).group_by(ChargingLocation.charging_location_id)
         return query.all()
+
+    def find_within_bounds(self, north: float, south: float, east: float, west: float) -> List[ChargingLocation]:
+        return (
+            self.db_session.query(ChargingLocation)
+            .filter(ChargingLocation.latitude >= south, ChargingLocation.latitude <= north)
+            .filter(ChargingLocation.longitude >= west, ChargingLocation.longitude <= east)
+            .all()
+        )

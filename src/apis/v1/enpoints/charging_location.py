@@ -4,7 +4,7 @@ from starlette import status
 from src.apis.v1.functionalities.charging_location.factory import get_charging_loc_service
 from src.apis.v1.functionalities.charging_location.service import ChargingLocService
 from src.apis.v1.schemas.charging_location import CreateChargingLocRequest, ChargingLocResponse, FindChargingLocRequest, \
-    UpdateChargingLocRequest, FindNearbyChargingLocRequest
+    UpdateChargingLocRequest, FindNearbyChargingLocRequest, NearbyUserChargingLocQuery, BBoxUserChargingLocQuery
 from src.core.utils.authentication import authenticate
 
 router = APIRouter(dependencies=[Depends(authenticate)])
@@ -52,3 +52,25 @@ async def delete_charging_loc(
         charging_location_svc: ChargingLocService = Depends(get_charging_loc_service)
 ):
     return charging_location_svc.delete_charging_loc(charging_location_id)
+
+# New endpoints for user-registered charger map queries
+@router.post("/user-charging-locations/nearby")
+async def user_chargers_nearby(
+    q: NearbyUserChargingLocQuery = Body(...),
+    svc: ChargingLocService = Depends(get_charging_loc_service),
+):
+    try:
+        return svc.find_user_nearby(q)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Query failed: {e}")
+
+
+@router.post("/user-charging-locations/bbox")
+async def user_chargers_bbox(
+    q: BBoxUserChargingLocQuery = Body(...),
+    svc: ChargingLocService = Depends(get_charging_loc_service),
+):
+    try:
+        return svc.find_user_in_bbox(q)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Query failed: {e}")

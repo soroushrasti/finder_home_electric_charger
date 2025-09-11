@@ -79,3 +79,16 @@ class FindNearbyChargingLocRequest(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     distance: Optional[float] = 1000000
+
+# New schemas matching public_chargers style
+class NearbyUserChargingLocQuery(BaseModel):
+    lat: float
+    lon: float
+    distance_km: float = 10.0
+
+class BBoxUserChargingLocQuery(BaseModel):
+    north: float
+    south: float
+    east: float
+    west: float
+

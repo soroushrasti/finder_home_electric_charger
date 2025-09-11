@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from src.apis.v1.schemas.charging_location import FindNearbyChargingLocRequest, CreateChargingLocRequest
+from src.apis.v1.schemas.charging_location import FindNearbyChargingLocRequest, CreateChargingLocRequest, NearbyUserChargingLocQuery, BBoxUserChargingLocQuery
 from src.core.db_repository.charging_location import ChargingLocRepositoryAbstract, ChargingLocRepository
 from src.core.models import Booking, ChargingLocation, Review
 
@@ -52,3 +52,17 @@ class ChargingLocService:
 
     def delete_charging_loc(self, charging_location_id: int, ):
          return self.charging_loc_repo.delete_charging_loc(charging_location_id)
+
+    def find_user_nearby(self, q: NearbyUserChargingLocQuery):
+        # Adapt to existing nearby finder
+        adapted = FindNearbyChargingLocRequest(latitude=q.lat, longitude=q.lon, distance=q.distance_km)
+        return self.find_nearby_charging_locs(adapted)
+
+    def find_user_in_bbox(self, q: BBoxUserChargingLocQuery):
+        locations: List[ChargingLocation] = self.charging_loc_repo.find_within_bounds(q.north, q.south, q.east, q.west)
+        for location in locations:
+            booking: Optional[Booking] = self.charging_loc_repo.get_non_ended_booking_by_charging_location_id(
+                location.charging_location_id
+            )
+            location.is_available = not bool(booking)
+        return locations
