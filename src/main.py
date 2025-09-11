@@ -12,6 +12,7 @@ from src.apis.v1.enpoints.booking import router as booking_router
 from src.apis.v1.enpoints.notification import router as notification_router
 from src.apis.v1.enpoints.pricing import router as pricing_router
 from src.apis.v1.enpoints.activity import router as activity_router
+from src.apis.v1.enpoints.public_charger import router as public_charger_router
 
 from src.config.base import BaseConfig
 from src.config.logging_config import setup_logging
@@ -54,6 +55,7 @@ app.include_router(booking_router, tags=["booking router"])
 app.include_router(notification_router, tags=["notification router"])
 app.include_router(pricing_router, tags=["pricing router"])
 app.include_router(activity_router, tags=["activity router"])
+app.include_router(public_charger_router, tags=["public_charger router"])
 
 
 def run_migrations():

@@ -20,6 +20,11 @@ class BaseConfig( BaseSettings):
     POSTMARK_SERVER_TOKEN: str = Field(default="")
     POSTMARK_SENDER: str = Field(default="")
     POSTMARK_MESSAGE_STREAM: str = Field(default="outbound")
+    EMAIL_STRICT: bool = Field(default=False)
+    # OpenChargeMap settings for public chargers import
+    OCM_API_BASE: str = Field(default="https://api.openchargemap.io/v3/poi")
+    OCM_API_KEY: str = Field(default="")
+
     model_config = {
         "env_file": None,  # Disable .env file loading on Railway
         "case_sensitive": False,

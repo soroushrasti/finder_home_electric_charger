@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, Float, String, Enum, Text, ForeignKey, Boolean, DateTime, Numeric
+from sqlalchemy import Column, Integer, Float, String, Text, ForeignKey, Boolean, DateTime, Numeric
 from sqlalchemy.ext.declarative import declarative_base
-from enum import Enum as PyEnum
-from sqlalchemy.orm import relationship  # Add this import
+from sqlalchemy.orm import relationship
+from datetime import datetime, UTC
 
 Base = declarative_base()
 
@@ -105,3 +105,23 @@ class Pricing(Base):
     total_value = Column(Float, nullable=True)
     price_per_kwh = Column(Float, nullable=True)
 
+
+class PublicCharger(Base):
+    __tablename__ = 'public_chargers'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    source = Column(String(50), nullable=False, default="openchargemap")
+    external_id = Column(String(100), nullable=False)  # ID from the source
+    name = Column(String(255), nullable=True)
+    address = Column(Text, nullable=True)
+    city = Column(String(100), nullable=True)
+    country = Column(String(2), nullable=False)  # ISO country code, e.g., NL, IR
+    latitude = Column(Numeric(10, 7), nullable=False)
+    longitude = Column(Numeric(10, 7), nullable=False)
+    power_kw = Column(Float, nullable=True)
+    connectors = Column(Text, nullable=True)  # JSON string of connector types
+    operator = Column(String(255), nullable=True)
+    is_active = Column(Boolean, nullable=True)
+    last_seen = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(UTC))
+    updated_at = Column(DateTime, nullable=False, default=lambda: datetime.now(UTC))

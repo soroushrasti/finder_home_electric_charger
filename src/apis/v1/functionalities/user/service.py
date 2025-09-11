@@ -235,12 +235,22 @@ class UserService:
             with Client(timeout=10.0) as client:
                 resp = client.post(url, headers=headers, json=payload)
             logger.info("Postmark response: status=%s", resp.status_code)
-            if resp.status_code >= 400:
-                try:
-                    detail = resp.json()
-                except Exception:
-                    detail = resp.text
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error sending email: {detail}")
+            if 200 <= resp.status_code < 300:
+                return
+            # Parse error body (may include ErrorCode)
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text
+            # If account pending approval (ErrorCode 412), suppress in non-strict mode
+            if (
+                not getattr(settings, 'EMAIL_STRICT', False)
+                and isinstance(detail, dict)
+                and detail.get('ErrorCode') == 412
+            ):
+                logger.warning("Postmark pending approval (ErrorCode 412). Suppressing email error in non-strict mode. detail=%s", detail)
+                return
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error sending email: {detail}")
         except HTTPException:
             raise
         except Exception as e:
