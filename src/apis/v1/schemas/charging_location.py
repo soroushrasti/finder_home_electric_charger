@@ -73,7 +73,7 @@ class UpdateChargingLocRequest(BaseModel):
     alley: Optional[str] = None
     street: Optional[str] = None
     home_phone_number: Optional[str] = Field(default=None, alias="phone_number")
-    fast_charging: Optional[bool] = Field(default=False, alias="fast_charging")
+    fast_charging: Optional[bool] = Field(default=None, alias="fast_charging")
     description: Optional[str] = None
     price_per_hour: Optional[float] = None
     power_output: Optional[float] = None  # in kW
