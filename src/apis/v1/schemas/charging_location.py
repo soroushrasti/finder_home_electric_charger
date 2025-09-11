@@ -17,6 +17,7 @@ class CreateChargingLocRequest(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     country: Optional[str] = None
+    has_accommodation: Optional[bool] = None
 
     class Config:
         allow_population_by_field_name = True
@@ -56,6 +57,7 @@ class FindChargingLocRequest(BaseModel):
         longitude: Optional[float] = None
         review_number : Optional[int] = None
         review_average: Optional[float] = None
+        has_accommodation: Optional[bool] = None
 
 class UpdateChargingLocRequest(BaseModel):
     user_id: int
@@ -73,6 +75,7 @@ class UpdateChargingLocRequest(BaseModel):
     country: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    has_accommodation: Optional[bool] = None
 
 
 class FindNearbyChargingLocRequest(BaseModel):
@@ -91,4 +94,3 @@ class BBoxUserChargingLocQuery(BaseModel):
     south: float
     east: float
     west: float
-

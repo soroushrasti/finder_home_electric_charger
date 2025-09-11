@@ -63,6 +63,8 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
                 query.longitude = charging_location_data.longitude
             if charging_location_data.country:
                 query.country = charging_location_data.country
+            if charging_location_data.has_accommodation is not None:
+                query.has_accommodation = charging_location_data.has_accommodation
 
             self.db_session.commit()
             return query
@@ -75,8 +77,8 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
 
     def delete_charging_loc(self, charging_loc_id: int):
         # Logic to delete a charging location from the database
-        self.db.query(ChargingLocation).filter(ChargingLocation.charging_location_id == charging_loc_id).delete()
-        self.db.commit()
+        self.db_session.query(ChargingLocation).filter(ChargingLocation.charging_location_id == charging_loc_id).delete()
+        self.db_session.commit()
 
     def find_charging_loc(self, find_charging_location_data: FindChargingLocRequest):
         query = self.db_session.query(ChargingLocation).join(User, User.user_id == ChargingLocation.user_id)
@@ -111,6 +113,8 @@ class ChargingLocRepository(ChargingLocRepositoryAbstract):
             query = query.filter(ChargingLocation.latitude == find_charging_location_data.latitude)
         if find_charging_location_data.longitude:
             query = query.filter(ChargingLocation.longitude == find_charging_location_data.longitude)
+        if find_charging_location_data.has_accommodation is not None:
+            query = query.filter(ChargingLocation.has_accommodation == find_charging_location_data.has_accommodation)
 
         return query.all()
 

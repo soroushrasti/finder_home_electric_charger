@@ -59,6 +59,7 @@ class ChargingLocation(Base):
     latitude = Column(Numeric(10, 7), nullable=True)
     longitude = Column(Numeric(10, 7), nullable=True)
     country = Column(String(100), nullable=True)
+    has_accommodation = Column(Boolean, nullable=True)
 
 
 class Booking(Base):
