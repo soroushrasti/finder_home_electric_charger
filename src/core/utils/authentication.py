@@ -1,12 +1,14 @@
 from fastapi import Header, HTTPException, status
 import os
 
-basis_token = os.getenv("TOKEN")
+from src.config.base import BaseConfig
+
+config = BaseConfig()
 
 
 def authenticate(x_api_token: str = Header(None)):
 
-    if x_api_token != basis_token:
+    if x_api_token != config.TOKEN:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
