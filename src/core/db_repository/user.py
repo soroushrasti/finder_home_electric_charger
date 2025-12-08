@@ -65,12 +65,12 @@ class UserRepository(UserRepositoryAbstract):
         user = self.db.query(User).filter(User.user_id == user_id).first()
          # log all code and date
         logging.info(f"email_verification_code: {email_verification_code}, user.email_verification_code: {user.email_verification_code}, current_time: {datetime.now()}, expired_time_email_verification: {user.expired_time_email_verification}")
-        if email_verification_code and user.email_verification_code and user.email_verification_code == email_verification_code and (user.expired_time_email_verification >= datetime.now()):
+        if email_verification_code and user.email_verification_code and user.email_verification_code == email_verification_code:
               user.is_validated_email = True
               self.db.commit()
               self.db.refresh(user)
               return user
-        if phone_verification_code and user.phone_verification_code and user.phone_verification_code == phone_verification_code and (user.expired_time_phone_verification >= datetime.now()):
+        if phone_verification_code and user.phone_verification_code and user.phone_verification_code == phone_verification_code:
               user.is_validated_phone_number = True
               self.db.commit()
               self.db.refresh(user)
