@@ -8,22 +8,17 @@ from src.apis.v1.schemas.user import CreateUserRequest, UserLogin, ValidateUserR
     ResendVerificationRequest, ForgotPasswordRequest
 from src.core.utils.authentication import authenticate
 
+# Public router: endpoints that do NOT require authentication
+public_router = APIRouter()
+
+# Protected router: endpoints that DO require authentication
 router = APIRouter(dependencies=[Depends(authenticate)])
 
-@router.get("/users/{user_id}")
-async def get_user(
-    user_id: int = Path(..., title="The user ID"),
-    user_svc: UserService = Depends(get_user_service)
-):
-    user = user_svc.get_user(user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@public_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_data: CreateUserRequest = Body(...),
-   user_svc: UserService = Depends(get_user_service),
+    user_svc: UserService = Depends(get_user_service),
 ):
     try:
         new_user = user_svc.create_user(user_data.dict())
@@ -34,7 +29,8 @@ async def create_user(
             detail=f"Error creating user: {str(e)}"
         )
 
-@router.post("/login", status_code=status.HTTP_200_OK)
+
+@public_router.post("/login", status_code=status.HTTP_200_OK)
 async def login_user(
     user_data: UserLogin = Body(...),
     user_svc: UserService = Depends(get_user_service)
@@ -49,6 +45,34 @@ async def login_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Error logging in: {str(e)}"
         )
+
+
+@public_router.post("/resend-verification")
+async def resend_verification(
+        user_data: ResendVerificationRequest = Body(...),
+        user_svc: UserService = Depends(get_user_service)
+    ):
+        return user_svc.resend_verification(user_data.user_id, user_data.language)
+
+
+@public_router.post("/user-forgot-password")
+async def forgot_password(
+        user_data: ForgotPasswordRequest = Body(...),
+        user_svc: UserService = Depends(get_user_service)
+    ):
+        return user_svc.forgot_password(user_data.email, user_data.language)
+
+
+@router.get("/users/{user_id}")
+async def get_user(
+    user_id: int = Path(..., title="The user ID"),
+    user_svc: UserService = Depends(get_user_service)
+):
+    user = user_svc.get_user(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
 
 @router.post("/validate-user")
 async def validate_user(
@@ -67,19 +91,6 @@ async def update_user(
     updated_user = user_svc.update_user(user_data, user_id)
     return updated_user
 
-@router.post("/resend-verification")
-async def resend_verification(
-        user_data: ResendVerificationRequest = Body(...),
-        user_svc: UserService = Depends(get_user_service)
-    ):
-        return user_svc.resend_verification(user_data.user_id, user_data.language)
-
-@router.post("/user-forgot-password")
-async def forgot_password(
-        user_data: ForgotPasswordRequest = Body(...),
-        user_svc: UserService = Depends(get_user_service)
-    ):
-        return user_svc.forgot_password(user_data.email, user_data.language)
 
 
 @router.post("/delete-user/{email}")

@@ -5,7 +5,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from src.apis.v1.enpoints.user import router as user_router
+from src.apis.v1.enpoints.user import router as user_router, public_router as public_user_router
 from src.apis.v1.enpoints.charging_location import router as charging_location_router
 from src.apis.v1.enpoints.car import router as car_router
 from src.apis.v1.enpoints.booking import router as booking_router
@@ -48,6 +48,10 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+# Public user routes (no auth)
+app.include_router(public_user_router, tags=["user_public router"])
+
+# Protected routes
 app.include_router(user_router, tags=["user_overview router"])
 app.include_router(charging_location_router, tags=["charging_location router"])
 app.include_router(car_router, tags=["car router"])
