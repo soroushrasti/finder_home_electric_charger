@@ -26,7 +26,7 @@ class BaseConfig( BaseSettings):
     OCM_API_KEY: str = Field(default="")
 
     model_config = {
-        "env_file": None,  # Disable .env file loading on Railway
+        "env_file": ".env",  # Disable .env file loading on Railway
         "case_sensitive": False,
         "extra": "allow"
     }
